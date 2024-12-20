@@ -1,6 +1,7 @@
 #pragma once
 
-#define MEMORY_MAX 4096
+#define SYSTEM_MEMORY_SIZE 2048
+#define VIDEO_MEMORY_SIZE 2048
 
 typedef unsigned char u8;
 typedef unsigned short u16;
