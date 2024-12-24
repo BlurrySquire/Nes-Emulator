@@ -8,6 +8,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 add_executable(NesEmu
 	source/main.c
 	source/memory_bus.c
+	source/cpu.c
 )
 
 find_package(SDL2 REQUIRED)
