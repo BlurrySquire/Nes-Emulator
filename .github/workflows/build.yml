@@ -61,6 +61,7 @@ jobs:
       - name: Set up MSYS2
         run: |
           choco install msys2
+          Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
           refreshenv
 
       - name: Install build tools
