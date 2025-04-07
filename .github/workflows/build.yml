@@ -37,10 +37,10 @@ jobs:
         run: |
           cd build-${{ matrix.config }}
           mkdir package
-          cp Nes-Emulator package/
+          cp NesEmu package/
           zip -r ../linux-${{ matrix.config }}.zip package
 
-      - name: Upload Linux Zip (${{ matrix.config }})
+      - name: Upload Binary (${{ matrix.config }})
         uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.config }}
