@@ -28,19 +28,21 @@ jobs:
           cd build-${{ matrix.config }}
           cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DSDL2_DIR=/usr/lib/cmake/SDL2
 
-      - name: Build (${{ matrix.config }})
+      - name: Build
         run: |
           cd build-${{ matrix.config }}
           make
 
-      - name: Package Binary
+      - name: Package
         run: |
           cd build-${{ matrix.config }}
           mkdir package
           cp NesEmu package/
-          zip -r ../linux-${{ matrix.config }}.zip package/*
+          cp ../README.md package/
+          cd package
+          zip -r ../../linux-${{ matrix.config }}.zip .
 
-      - name: Upload Binary (${{ matrix.config }})
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.config }}
