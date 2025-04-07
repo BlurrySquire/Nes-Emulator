@@ -47,3 +47,53 @@ jobs:
         with:
           name: linux-${{ matrix.config }}
           path: linux-${{ matrix.config }}.zip
+
+
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [Release, Debug]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSYS2
+        run: |
+          choco install msys2
+          refreshenv
+
+      - name: Install build tools
+        run: |
+          pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain cmake zip
+
+      - name: Install SDL2
+        run: |
+          pacman -S --noconfirm mingw-w64-x86_64-SDL2
+
+      - name: Configure CMake (${{ matrix.config }})
+        run: |
+          mkdir -p build-${{ matrix.config }}
+          cd build-${{ matrix.config }}
+          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DSDL2_DIR=C:/msys64/mingw64/lib/cmake/SDL2
+
+      - name: Build
+        run: |
+          cd build-${{ matrix.config }}
+          cmake --build .
+
+      - name: Package
+        run: |
+          cd build-${{ matrix.config }}
+          mkdir package
+          cp NesEmu.exe package/  # Ensure your Windows binary is NesEmu.exe
+          cp ../README.md package/
+          cp C:/msys64/mingw64/bin/SDL2.dll package/  # Copy the SDL2.dll from MSYS2 install
+          cd package
+          zip -r ../../windows-${{ matrix.config }}.zip .
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.config }}
+          path: windows-${{ matrix.config }}.zip
