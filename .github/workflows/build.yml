@@ -48,7 +48,6 @@ jobs:
           name: linux-${{ matrix.config }}
           path: linux-${{ matrix.config }}.zip
 
-
   build-windows:
     runs-on: windows-latest
     strategy:
@@ -58,30 +57,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up MSYS2
+      - name: Install Visual Studio Build Tools
         run: |
-          choco install msys2
-          Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-          refreshenv
-
-      - name: Install build tools
-        run: |
-          pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain cmake zip
+          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --quiet --norestart"
 
       - name: Install SDL2
         run: |
-          pacman -S --noconfirm mingw-w64-x86_64-SDL2
+          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.26.5/SDL2-2.26.5-win64-x64.zip" -OutFile "SDL2.zip"
+          Expand-Archive -Path SDL2.zip -DestinationPath C:\SDL2
+          Remove-Item -Force SDL2.zip
 
       - name: Configure CMake (${{ matrix.config }})
         run: |
           mkdir -p build-${{ matrix.config }}
           cd build-${{ matrix.config }}
-          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DSDL2_DIR=C:/msys64/mingw64/lib/cmake/SDL2
+          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 16 2019" -DSDL2_DIR=C:/SDL2
 
       - name: Build
         run: |
           cd build-${{ matrix.config }}
-          cmake --build .
+          cmake --build . --config ${{ matrix.config }}
 
       - name: Package
         run: |
@@ -89,7 +84,7 @@ jobs:
           mkdir package
           cp NesEmu.exe package/  # Ensure your Windows binary is NesEmu.exe
           cp ../README.md package/
-          cp C:/msys64/mingw64/bin/SDL2.dll package/  # Copy the SDL2.dll from MSYS2 install
+          cp C:/SDL2/x64/SDL2.dll package/  # Copy the SDL2.dll from the SDL2 download
           cd package
           zip -r ../../windows-${{ matrix.config }}.zip .
 
