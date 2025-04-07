@@ -78,9 +78,9 @@ jobs:
         run: |
           cd build-${{ matrix.config }}
           mkdir package
-          cp NesEmu.exe package/  # Ensure your Windows binary is NesEmu.exe
+          cp ${{ matrix.config }}/NesEmu.exe package/
           cp ../README.md package/
-          cp C:/SDL2/x64/SDL2.dll package/  # Copy the SDL2.dll from the SDL2 download
+          cp C:/SDL2/x64/SDL2.dll package/
           cd package
           zip -r ../../windows-${{ matrix.config }}.zip .
 
