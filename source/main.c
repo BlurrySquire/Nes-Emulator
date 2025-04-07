@@ -12,11 +12,7 @@ int main(int argc, char* argv[]) {
 
 	memory_write(0x0000, 0xA9); // LDA - #Immediate
 	memory_write(0x0001, 0x10);
-	memory_write(0x0002, 0xA2); // LDX - #Immediate
-	memory_write(0x0003, 0x10);
-	memory_write(0x0004, 0xA0); // LDY - #Immediate
-	memory_write(0x0005, 0x10);
-	memory_write(0x0006, 0xEA); // NOP - Implied
+	memory_write(0x0002, 0xEA); // NOP - Implied
 
 	cpu_execute_instruction(&cpu_state);
 	cpu_execute_instruction(&cpu_state);
