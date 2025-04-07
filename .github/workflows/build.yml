@@ -61,9 +61,9 @@ jobs:
         run: |
           choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --quiet --norestart"
 
-      - name: Install SDL2
+      - name: Install Dependencies
         run: |
-          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.26.5/SDL2-2.26.5-win64-x64.zip" -OutFile "SDL2.zip"
+          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.26.5/SDL2-devel-2.26.5-VC.zip" -OutFile "SDL2.zip"
           Expand-Archive -Path SDL2.zip -DestinationPath C:\SDL2
           Remove-Item -Force SDL2.zip
 
