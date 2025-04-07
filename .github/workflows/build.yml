@@ -39,7 +39,8 @@ jobs:
           mkdir package
           cp NesEmu package/
           cp ../README.md package/
-          zip -r ../../linux-${{ matrix.config }}.zip package/*
+          cd package
+          zip -r ../../linux-${{ matrix.config }}.zip .
 
       - name: Upload
         uses: actions/upload-artifact@v4
