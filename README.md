@@ -8,6 +8,7 @@ Everything is in the works. There is no ppu, just cpu atm. The cpu currently has
 - NOP
 - LDA
 - LDX
+- LDY
 - JMP
 
 ## Building
