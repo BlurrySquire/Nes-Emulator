@@ -79,7 +79,7 @@ jobs:
           cd build-${{ matrix.config }}
           mkdir ../../package
           cp ${{ matrix.config }}/NesEmu.exe ../../package/
-          cp ../README.md package/
+          cp ../README.md ../../package/
           cp C:/SDL2/SDL2-2.26.5/lib/x64/SDL2.dll ../../package/
           cd ../../package
 
