@@ -24,9 +24,17 @@ int main(int argc, char* argv[]) {
 	memory_init();
 	cpu_init(&cpu_state);
 
-	memory_write(0x0000, 0xA9); // LDA - #Immediate
-	memory_write(0x0001, 0x10); // Hex 16
-	memory_write(0x0002, 0xEA); // NOP - Implied
+	memory_write(0x0000, 0x4C); // JMP Absolute to 0x1000
+	memory_write(0x0001, 0x00);
+	memory_write(0x0002, 0x02);
+	
+	memory_write(0x0100, 0x10); // 16
+
+	memory_write(0x0200, 0xAD); // LDA Absolute at 0x0100
+	memory_write(0x0201, 0x00);
+	memory_write(0x0202, 0x01);
+
+	memory_write(0x1003, 0xEA); // NOP - Implied
 	
 	SDL_bool running = SDL_TRUE;
 	while (running == SDL_TRUE) {
@@ -40,6 +48,7 @@ int main(int argc, char* argv[]) {
 		cpu_execute_instruction(&cpu_state);
 	}
 
+	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Program Counter: %i", cpu_state.program_counter);
 	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Accumulator: %i", cpu_state.accumulator);
 	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Register X: %i", cpu_state.register_x);
 	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Register Y: %i", cpu_state.register_y);
