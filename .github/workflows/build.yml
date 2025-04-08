@@ -77,15 +77,13 @@ jobs:
       - name: Package
         run: |
           cd build-${{ matrix.config }}
-          mkdir package
-          cp ${{ matrix.config }}/NesEmu.exe package/
-          cp ../README.md package/
-          cp C:/SDL2/SDL2-2.26.5/lib/x64/SDL2.dll package/
-          cd package
-          Compress-Archive -Path * -DestinationPath ../../windows-${{ matrix.config }}.zip
+          mkdir windows-${{ matrix.config }}
+          cp ${{ matrix.config }}/NesEmu.exe windows-${{ matrix.config }}/
+          cp ../README.md windows-${{ matrix.config }}/
+          cp C:/SDL2/SDL2-2.26.5/lib/x64/SDL2.dll windows-${{ matrix.config }}/
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: windows-${{ matrix.config }}
-          path: windows-${{ matrix.config }}.zip
+          path: windows-${{ matrix.config }}/
