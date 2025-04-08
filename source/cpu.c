@@ -4,14 +4,17 @@
 
 void opcode_nop(cpu* state);
 void opcode_lda(cpu* state, u8 operand);
+void opcode_jmp(cpu* state, u16 operand);
 
 u8 addressing_immediate(cpu* state);
 u8 addressing_zeropage(cpu* state);
 u8 addressing_zeropagex(cpu* state);
 u8 addressing_zeropagey(cpu* state);
 u8 addressing_absolute(cpu* state);
+u16 addressing_absolute_address(cpu* state);
 u8 addressing_absolutex(cpu* state);
 u8 addressing_absolutey(cpu* state);
+u16 addressing_indirect(cpu* state);
 u8 addressing_indexedindirect(cpu* state);
 u8 addressing_indirectindexed(cpu* state);
 
@@ -51,6 +54,9 @@ void cpu_execute_instruction(cpu* state) {
 		case 0xB9: opcode_lda(state, addressing_absolutey(state)); break;
 		case 0xA1: opcode_lda(state, addressing_indexedindirect(state)); break;
 		case 0xB1: opcode_lda(state, addressing_indirectindexed(state)); break;
+
+		case 0x4C: opcode_jmp(state, addressing_absolute_address(state)); break;
+		case 0x6C: opcode_jmp(state, addressing_indirect(state)); break;
 	}
 
 	state->total_cycles += state->current_instruction_cycles;
@@ -65,6 +71,10 @@ void opcode_lda(cpu* state, u8 operand) {
 
 	state->register_status.zero_flag = !state->accumulator;
 	state->register_status.negative_flag = state->accumulator & (1 << 7);
+}
+
+void opcode_jmp(cpu* state, u16 operand) {
+	state->program_counter = operand;
 }
 
 u8 addressing_immediate(cpu* state) {
@@ -115,6 +125,14 @@ u8 addressing_absolute(cpu* state) {
 	return byte;
 }
 
+u16 addressing_absolute_address(cpu* state) {
+	u16 address = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
+	state->program_counter += 2;
+	state->current_instruction_cycles += 2;
+
+	return address;
+}
+
 u8 addressing_absolutex(cpu* state) {
 	u16 base = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
 	u16 address = base + state->register_x;
@@ -141,6 +159,23 @@ u8 addressing_absolutey(cpu* state) {
 	}
 
 	return byte;
+}
+
+u16 addressing_indirect(cpu* state) {
+	u16 pointer = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
+
+	u8 low = memory_read(pointer);
+	u8 high;
+
+	// Bug where if low byte on page boundary then high byte wraps around to page start
+	if ((pointer & 0x00FF) == 0x00FF) {
+		high = memory_read(pointer & 0xFF00);
+	}
+	else {
+		high = memory_read(pointer + 1);
+	}
+
+	return (high << 8) | low;
 }
 
 u8 addressing_indexedindirect(cpu* state) {
