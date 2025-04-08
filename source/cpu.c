@@ -5,6 +5,16 @@
 void opcode_nop(cpu* state);
 void opcode_lda(cpu* state, u8 operand);
 
+u8 addressing_immediate(cpu* state);
+u8 addressing_zeropage(cpu* state);
+u8 addressing_zeropagex(cpu* state);
+u8 addressing_zeropagey(cpu* state);
+u8 addressing_absolute(cpu* state);
+u8 addressing_absolutex(cpu* state);
+u8 addressing_absolutey(cpu* state);
+u8 addressing_indexedindirect(cpu* state);
+u8 addressing_indirectindexed(cpu* state);
+
 void cpu_init(cpu* state) {
 	state->total_cycles = 0;
 	state->current_instruction_cycles = 0;
