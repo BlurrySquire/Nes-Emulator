@@ -69,6 +69,13 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x94: opcode_sty(state, addressing_zeropagex(state)); break;
 		case 0x8C: opcode_sty(state, addressing_absolute(state)); break;
 
+		case 0xAA: opcode_tax(state); break;
+		case 0xA8: opcode_tay(state); break;
+		case 0xBA: opcode_tsx(state); break;
+		case 0x8A: opcode_txa(state); break;
+		case 0x9A: opcode_txs(state); break;
+		case 0x98: opcode_tya(state); break;
+
 		case 0x4C: opcode_jmp(state, addressing_absolute(state)); break;
 		case 0x6C: opcode_jmp(state, addressing_indirect(state)); break;
 	}

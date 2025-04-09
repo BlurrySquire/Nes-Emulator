@@ -44,6 +44,54 @@ void opcode_sty(cpu* state, u16 address) {
 	state->current_instruction_cycles += 1;
 }
 
+void opcode_tax(cpu* state) {
+	state->register_x = state->accumulator;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_y;
+	state->register_status.negative_flag = state->register_y & (1 << 7);
+}
+
+void opcode_tay(cpu* state) {
+	state->register_y = state->accumulator;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_y;
+	state->register_status.negative_flag = state->register_y & (1 << 7);
+}
+
+void opcode_tsx(cpu* state) {
+	state->register_x = state->stack_pointer;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_y;
+	state->register_status.negative_flag = state->register_y & (1 << 7);
+}
+
+void opcode_txa(cpu* state) {
+	state->accumulator = state->register_x;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_y;
+	state->register_status.negative_flag = state->register_y & (1 << 7);
+}
+
+void opcode_txs(cpu* state) {
+	state->stack_pointer = state->register_x;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_y;
+	state->register_status.negative_flag = state->register_y & (1 << 7);
+}
+
+void opcode_tya(cpu* state) {
+	state->accumulator = state->register_y;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_y;
+	state->register_status.negative_flag = state->register_y & (1 << 7);
+}
+
 void opcode_jmp(cpu* state, u16 address) {
 	state->program_counter = address;
 }
