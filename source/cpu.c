@@ -41,17 +41,33 @@ void cpu_execute_instruction(cpu* state) {
 		case 0xA1: opcode_lda(state, addressing_indexedindirect(state)); break;
 		case 0xB1: opcode_lda(state, addressing_indirectindexed(state)); break;
 
+		case 0x85: opcode_sta(state, addressing_zeropage(state)); break;
+		case 0x95: opcode_sta(state, addressing_zeropagex(state)); break;
+		case 0x8D: opcode_sta(state, addressing_absolute(state)); break;
+		case 0x9D: opcode_sta(state, addressing_absolutex(state)); break;
+		case 0x99: opcode_sta(state, addressing_absolutey(state)); break;
+		case 0x81: opcode_sta(state, addressing_indexedindirect(state)); break;
+		case 0x91: opcode_sta(state, addressing_indirectindexed(state)); break;
+
 		case 0xA2: opcode_ldx(state, addressing_immediate(state)); break;
 		case 0xA6: opcode_ldx(state, addressing_zeropage(state)); break;
 		case 0xB6: opcode_ldx(state, addressing_zeropagey(state)); break;
 		case 0xAE: opcode_ldx(state, addressing_absolute(state)); break;
 		case 0xBE: opcode_ldx(state, addressing_absolutey(state)); break;
 
+		case 0x86: opcode_stx(state, addressing_zeropage(state)); break;
+		case 0x96: opcode_stx(state, addressing_zeropagey(state)); break;
+		case 0x8E: opcode_stx(state, addressing_absolute(state)); break;
+
 		case 0xA0: opcode_ldy(state, addressing_immediate(state)); break;
 		case 0xA4: opcode_ldy(state, addressing_zeropage(state)); break;
 		case 0xB4: opcode_ldy(state, addressing_zeropagex(state)); break;
 		case 0xAC: opcode_ldy(state, addressing_absolute(state)); break;
 		case 0xBC: opcode_ldy(state, addressing_absolutex(state)); break;
+
+		case 0x84: opcode_sty(state, addressing_zeropage(state)); break;
+		case 0x94: opcode_sty(state, addressing_zeropagex(state)); break;
+		case 0x8C: opcode_sty(state, addressing_absolute(state)); break;
 
 		case 0x4C: opcode_jmp(state, addressing_absolute(state)); break;
 		case 0x6C: opcode_jmp(state, addressing_indirect(state)); break;
