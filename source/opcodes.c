@@ -1,9 +1,9 @@
 #include "opcodes.h"
 #include "memory_bus.h"
 
-void opcode_nop(cpu* state) {
-	state->current_instruction_cycles += 1;
-}
+//
+// ACCESS
+//
 
 void opcode_lda(cpu* state, u16 address) {
 	state->accumulator = memory_read(address);
@@ -43,6 +43,10 @@ void opcode_sty(cpu* state, u16 address) {
 	memory_write(address, state->register_y);
 	state->current_instruction_cycles += 1;
 }
+
+//
+// TRANSFER
+//
 
 void opcode_tax(cpu* state) {
 	state->register_x = state->accumulator;
@@ -92,6 +96,62 @@ void opcode_tya(cpu* state) {
 	state->register_status.negative_flag = state->register_y & (1 << 7);
 }
 
+//
+// ARITHMETIC
+//
+
+void opcode_adc(cpu* state, u16 address) {
+	u8 memory = memory_read(address);
+	u16 result = state->accumulator + memory + state->register_status.carry_flag;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.carry_flag = result > 0x00FF;
+	state->register_status.zero_flag = !result;
+	state->register_status.overflow_flag = (result ^ state->accumulator) & (result ^ memory) & 0x80;
+	state->register_status.negative_flag = result & (1 << 7);
+
+	state->accumulator = result & 0xFF;
+}
+
+void opcode_sbc(cpu* state, u16 address) {
+	u8 memory = memory_read(address);
+	u16 result = state->accumulator - memory - (1 - state->register_status.carry_flag);
+	state->current_instruction_cycles += 1;
+
+	state->register_status.carry_flag = result > 0x00FF;
+	state->register_status.zero_flag = !result;
+	state->register_status.overflow_flag = (result ^ state->accumulator) & (result ^ memory) & 0x80;
+	state->register_status.negative_flag = result & (1 << 7);
+
+	state->accumulator = result & 0xFF;
+}
+
+//
+// JUMP
+//
+
 void opcode_jmp(cpu* state, u16 address) {
 	state->program_counter = address;
+}
+
+//
+// OTHER
+//
+
+void opcode_nop(cpu* state) {
+	state->current_instruction_cycles += 1;
+}
+
+//
+// FLAGS
+//
+
+void opcode_clc(cpu* state) {
+	state->register_status.carry_flag = 0;
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_sec(cpu* state) {
+	state->register_status.carry_flag = 1;
+	state->current_instruction_cycles += 1;
 }

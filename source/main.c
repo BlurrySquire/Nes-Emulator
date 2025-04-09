@@ -27,23 +27,21 @@ int main(int argc, char* argv[]) {
 	memory_write(0x0000, 0x4C); // JMP $0100
 	memory_write(0x0001, 0x00);
 	memory_write(0x0002, 0x01);
-	
-	memory_write(0x0100, 0xA2); // LDX #$10
-	memory_write(0x0101, 0x10);
-	
-	memory_write(0x0102, 0x86); // STX $03
-	memory_write(0x0103, 0x03);
-	
-	memory_write(0x0104, 0xA4); // LDY $03
-	memory_write(0x0105, 0x03);
-	
-	memory_write(0x0106, 0x84); // STY $04
-	memory_write(0x0107, 0x04);
-	
-	memory_write(0x0108, 0xA5); // LDA $04
-	memory_write(0x0109, 0x04);
-	
-	memory_write(0x010A, 0x00); // BRK
+
+	memory_write(0x0100, 0xA9); // LDA #$40
+	memory_write(0x0101, 0x40);
+
+	memory_write(0x0102, 0x38); // SEC
+
+	memory_write(0x0103, 0xE9); // SBC #$20
+	memory_write(0x0104, 0x20);
+
+	memory_write(0x0105, 0x18); // CLC
+
+	memory_write(0x0106, 0x69); // ADC #$10
+	memory_write(0x0107, 0x10);
+
+	memory_write(0x0108, 0x00); // BRK
 	
 	SDL_bool running = SDL_TRUE;
 	while (running == SDL_TRUE) {
