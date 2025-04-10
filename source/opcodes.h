@@ -32,6 +32,10 @@ void opcode_dey(cpu* state);
 void opcode_jmp(cpu* state, u16 address);
 
 // Stack
+void opcode_pha(cpu* state);
+void opcode_pla(cpu* state);
+void opcode_php(cpu* state);
+void opcode_plp(cpu* state);
 void opcode_txs(cpu* state);
 void opcode_tsx(cpu* state);
 

@@ -9,7 +9,7 @@ void cpu_init(cpu* state) {
 	state->current_instruction_cycles = 0;
 	
 	state->program_counter = 0x0000;
-	state->stack_pointer = 0x00;
+	state->stack_pointer = 0xFD;
 
 	state->accumulator = 0x00;
 	state->register_x = 0x00;
@@ -17,7 +17,7 @@ void cpu_init(cpu* state) {
 
 	state->status.carry_flag = 0;
 	state->status.zero_flag = 0;
-	state->status.interrupt_disable = 0;
+	state->status.interrupt_disable = 1;
 	state->status.decimal_flag = 0;
 	state->status.overflow_flag = 0;
 	state->status.negative_flag = 0;
@@ -130,7 +130,10 @@ void cpu_execute_instruction(cpu* state) {
 		//
 		// STACK
 		//
-
+		case 0x48: opcode_pha(state); break;
+		case 0x68: opcode_pla(state); break;
+		case 0x08: opcode_php(state); break;
+		case 0x28: opcode_plp(state); break;
 		case 0x9A: opcode_txs(state); break;
 		case 0xBA: opcode_tsx(state); break;
 

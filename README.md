@@ -14,7 +14,7 @@ The instruction groups are referenced from nesdev wiki's instruction reference.
 - No compare instructions
 - No branch instructions
 - Some jump instructions
-- Some stack instructions
+- All stack instructions
 - All flag instructions
 - All other instructions
 

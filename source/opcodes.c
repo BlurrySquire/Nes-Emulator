@@ -64,24 +64,8 @@ void opcode_tay(cpu* state) {
 	state->status.negative_flag = state->register_y & (1 << 7);
 }
 
-void opcode_tsx(cpu* state) {
-	state->register_x = state->stack_pointer;
-	state->current_instruction_cycles += 1;
-
-	state->status.zero_flag = !state->register_y;
-	state->status.negative_flag = state->register_y & (1 << 7);
-}
-
 void opcode_txa(cpu* state) {
 	state->accumulator = state->register_x;
-	state->current_instruction_cycles += 1;
-
-	state->status.zero_flag = !state->register_y;
-	state->status.negative_flag = state->register_y & (1 << 7);
-}
-
-void opcode_txs(cpu* state) {
-	state->stack_pointer = state->register_x;
 	state->current_instruction_cycles += 1;
 
 	state->status.zero_flag = !state->register_y;
@@ -180,6 +164,54 @@ void opcode_dey(cpu* state) {
 
 	state->status.zero_flag = !state->register_x;
 	state->status.negative_flag = state->register_x & (1 << 7);
+}
+
+//
+// STACK
+//
+
+void opcode_pha(cpu* state) {
+	memory_write(state->stack_pointer, state->accumulator);
+	state->stack_pointer--;
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_pla(cpu* state) {
+	state->accumulator = memory_read(state->stack_pointer);
+	state->stack_pointer++;
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_php(cpu* state) {
+	memory_write(state->stack_pointer, state->status.as_byte);
+	state->stack_pointer--;
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_plp(cpu* state) {
+	state->status.as_byte = memory_read(state->stack_pointer);
+	state->stack_pointer++;
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_tsx(cpu* state) {
+	state->register_x = state->stack_pointer;
+	state->current_instruction_cycles += 1;
+
+	state->status.zero_flag = !state->register_y;
+	state->status.negative_flag = state->register_y & (1 << 7);
+}
+
+void opcode_txs(cpu* state) {
+	state->stack_pointer = state->register_x;
+	state->current_instruction_cycles += 1;
+
+	state->status.zero_flag = !state->register_y;
+	state->status.negative_flag = state->register_y & (1 << 7);
 }
 
 //
