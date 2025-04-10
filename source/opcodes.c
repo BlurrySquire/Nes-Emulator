@@ -221,28 +221,28 @@ void opcode_lsr_accumulator(cpu* state) {
 //
 
 void opcode_pha(cpu* state) {
-	memory_write(state->stack_pointer, state->accumulator);
+	memory_write(state->stack_pointer + 0x0100, state->accumulator);
 	state->stack_pointer--;
 
 	state->current_instruction_cycles += 1;
 }
 
 void opcode_pla(cpu* state) {
-	state->accumulator = memory_read(state->stack_pointer);
+	state->accumulator = memory_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
 
 	state->current_instruction_cycles += 1;
 }
 
 void opcode_php(cpu* state) {
-	memory_write(state->stack_pointer, state->status.as_byte);
+	memory_write(state->stack_pointer + 0x0100, state->status.as_byte);
 	state->stack_pointer--;
 
 	state->current_instruction_cycles += 1;
 }
 
 void opcode_plp(cpu* state) {
-	state->status.as_byte = memory_read(state->stack_pointer);
+	state->status.as_byte = memory_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
 
 	state->current_instruction_cycles += 1;
