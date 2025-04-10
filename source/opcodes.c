@@ -126,6 +126,62 @@ void opcode_sbc(cpu* state, u16 address) {
 	state->accumulator = result & 0xFF;
 }
 
+void opcode_inc(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+	u8 result = value + 1;
+
+	memory_write(address, value);
+	memory_write(address, result);
+	state->current_instruction_cycles += 3;
+
+	state->register_status.zero_flag = !result;
+	state->register_status.negative_flag = result & (1 << 7);
+}
+
+void opcode_dec(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+	u8 result = value - 1;
+
+	memory_write(address, value);
+	memory_write(address, result);
+	state->current_instruction_cycles += 3;
+
+	state->register_status.zero_flag = !result;
+	state->register_status.negative_flag = result & (1 << 7);
+}
+
+void opcode_inx(cpu* state) {
+	state->register_x += 1;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_x;
+	state->register_status.negative_flag = state->register_x & (1 << 7);
+}
+
+void opcode_dex(cpu* state) {
+	state->register_x -= 1;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_x;
+	state->register_status.negative_flag = state->register_x & (1 << 7);
+}
+
+void opcode_iny(cpu* state) {
+	state->register_y += 1;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_x;
+	state->register_status.negative_flag = state->register_x & (1 << 7);
+}
+
+void opcode_dey(cpu* state) {
+	state->register_y -= 1;
+	state->current_instruction_cycles += 1;
+
+	state->register_status.zero_flag = !state->register_x;
+	state->register_status.negative_flag = state->register_x & (1 << 7);
+}
+
 //
 // JUMP
 //

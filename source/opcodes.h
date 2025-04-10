@@ -22,6 +22,12 @@ void opcode_tya(cpu* state);
 // Arithmetic
 void opcode_adc(cpu* state, u16 address);
 void opcode_sbc(cpu* state, u16 address);
+void opcode_inc(cpu* state, u16 address);
+void opcode_dec(cpu* state, u16 address);
+void opcode_inx(cpu* state);
+void opcode_dex(cpu* state);
+void opcode_iny(cpu* state);
+void opcode_dey(cpu* state);
 
 // Jump
 void opcode_jmp(cpu* state, u16 address);

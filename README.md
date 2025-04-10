@@ -8,7 +8,7 @@ Everything is in the works. There is no ppu, just cpu atm. The cpu currently has
 The instruction groups are referenced from nesdev wiki's instruction reference.
 - All access instructions
 - All transfer instructions
-- Some arithmetic instructions
+- All arithmetic instructions
 - No shift instructions
 - No bitwise instructions
 - No compare instructions

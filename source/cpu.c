@@ -104,6 +104,22 @@ void cpu_execute_instruction(cpu* state) {
 		case 0xE1: opcode_sbc(state, addressing_indexedindirect(state)); break;
 		case 0xF1: opcode_sbc(state, addressing_indirectindexed(state)); break;
 
+		case 0xE6: opcode_inc(state, addressing_zeropage(state)); break;
+		case 0xF6: opcode_inc(state, addressing_zeropagex(state)); break;
+		case 0xEE: opcode_inc(state, addressing_absolute(state)); break;
+		case 0xFE: opcode_inc(state, addressing_absolutex(state)); break;
+
+		case 0xC6: opcode_dec(state, addressing_zeropage(state)); break;
+		case 0xD6: opcode_dec(state, addressing_zeropagex(state)); break;
+		case 0xCE: opcode_dec(state, addressing_absolute(state)); break;
+		case 0xDE: opcode_dec(state, addressing_absolutex(state)); break;
+
+		case 0xE8: opcode_inx(state); break;
+		case 0xCA: opcode_dex(state); break;
+
+		case 0xC8: opcode_iny(state); break;
+		case 0x88: opcode_dey(state); break;
+
 		//
 		// JUMP
 		//
