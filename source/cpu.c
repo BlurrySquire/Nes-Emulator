@@ -139,13 +139,13 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x2A: opcode_rol_accumulator(state); break;
 		case 0x26: opcode_rol(state, addressing_zeropage(state)); break;
 		case 0x36: opcode_rol(state, addressing_zeropagex(state)); break;
-		case 0x2E: opcode_rol(state, addressing_absoulte(state)); break;
+		case 0x2E: opcode_rol(state, addressing_absolute(state)); break;
 		case 0x3E: opcode_rol(state, addressing_absolutex(state)); break;
 
 		case 0x6A: opcode_ror_accumulator(state); break;
 		case 0x66: opcode_ror(state, addressing_zeropage(state)); break;
 		case 0x76: opcode_ror(state, addressing_zeropagex(state)); break;
-		case 0x6E: opcode_ror(state, addressing_absoulte(state)); break;
+		case 0x6E: opcode_ror(state, addressing_absolute(state)); break;
 		case 0x7E: opcode_ror(state, addressing_absolutex(state)); break;
 
 		//
