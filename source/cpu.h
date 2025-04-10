@@ -21,6 +21,9 @@ typedef struct cpu {
 	u8 register_x, register_y;
 	struct status register_status;
 	u8 stack_pointer;
+
+	u8 interrupt_flag;
+	u8 instruction_delay;
 } cpu;
 
 void cpu_init(cpu* state);

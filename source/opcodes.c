@@ -155,3 +155,30 @@ void opcode_sec(cpu* state) {
 	state->register_status.carry_flag = 1;
 	state->current_instruction_cycles += 1;
 }
+
+void opcode_cli(cpu* state) {
+	state->interrupt_flag = 0;
+	state->instruction_delay = 1;
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_sei(cpu* state) {
+	state->interrupt_flag = 1;
+	state->instruction_delay = 1;
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_cld(cpu* state) {
+	state->register_status.decimal_flag = 0;
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_sed(cpu* state) {
+	state->register_status.decimal_flag = 1;
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_clv(cpu* state) {
+	state->register_status.overflow_flag = 0;
+	state->current_instruction_cycles += 1;
+}

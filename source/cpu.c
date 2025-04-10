@@ -22,6 +22,8 @@ void cpu_init(cpu* state) {
 	state->register_status.overflow_flag = 0;
 	state->register_status.negative_flag = 0;
 	state->register_status.the_b_flag = 0;
+
+	state->interrupt_flag = 0;
 }
 
 void cpu_execute_instruction(cpu* state) {
@@ -115,12 +117,32 @@ void cpu_execute_instruction(cpu* state) {
 
 		case 0x18: opcode_clc(state); break;
 		case 0x38: opcode_sec(state); break;
+		case 0x58: opcode_cli(state); break;
+		case 0x78: opcode_sei(state); break;
+		case 0xD8: opcode_cld(state); break;
+		case 0xF8: opcode_sed(state); break;
+		case 0xB8: opcode_clv(state); break;
 
 		//
 		// OTHER
 		//
 
 		case 0xEA: opcode_nop(state); break;
+	}
+
+	// CLI & SEI have a 1 instruction delay.
+	if (state->instruction_delay == 0xFF) {
+		if (state->interrupt_flag == 0) {
+			state->register_status.interrupt_disable = 0;
+		}
+		else if (state->interrupt_flag == 1) {
+			state->register_status.interrupt_disable = 1;
+		}
+
+		state->instruction_delay = 0;
+	}
+	else if (state->instruction_delay == 1) {
+		state->instruction_delay = 0xFF;
 	}
 
 	state->total_cycles += state->current_instruction_cycles;

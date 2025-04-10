@@ -29,6 +29,11 @@ void opcode_jmp(cpu* state, u16 address);
 // Flags
 void opcode_clc(cpu* state);
 void opcode_sec(cpu* state);
+void opcode_cli(cpu* state);
+void opcode_sei(cpu* state);
+void opcode_cld(cpu* state);
+void opcode_sed(cpu* state);
+void opcode_clv(cpu* state);
 
 // Other
 void opcode_nop(cpu* state);
