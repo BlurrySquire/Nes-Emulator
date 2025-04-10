@@ -149,6 +149,40 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x7E: opcode_ror(state, addressing_absolutex(state)); break;
 
 		//
+		// BITWISE
+		//
+
+		case 0x29: opcode_and(state, addressing_immediate(state)); break;
+		case 0x25: opcode_and(state, addressing_zeropage(state)); break;
+		case 0x35: opcode_and(state, addressing_zeropagex(state)); break;
+		case 0x2D: opcode_and(state, addressing_absolute(state)); break;
+		case 0x3D: opcode_and(state, addressing_absolutex(state)); break;
+		case 0x39: opcode_and(state, addressing_absolutey(state)); break;
+		case 0x21: opcode_and(state, addressing_indexedindirect(state)); break;
+		case 0x31: opcode_and(state, addressing_indirectindexed(state)); break;
+
+		case 0x09: opcode_ora(state, addressing_immediate(state)); break;
+		case 0x05: opcode_ora(state, addressing_zeropage(state)); break;
+		case 0x15: opcode_ora(state, addressing_zeropagex(state)); break;
+		case 0x0D: opcode_ora(state, addressing_absolute(state)); break;
+		case 0x1D: opcode_ora(state, addressing_absolutex(state)); break;
+		case 0x19: opcode_ora(state, addressing_absolutey(state)); break;
+		case 0x01: opcode_ora(state, addressing_indexedindirect(state)); break;
+		case 0x11: opcode_ora(state, addressing_indirectindexed(state)); break;
+
+		case 0x49: opcode_eor(state, addressing_immediate(state)); break;
+		case 0x45: opcode_eor(state, addressing_zeropage(state)); break;
+		case 0x55: opcode_eor(state, addressing_zeropagex(state)); break;
+		case 0x4D: opcode_eor(state, addressing_absolute(state)); break;
+		case 0x5D: opcode_eor(state, addressing_absolutex(state)); break;
+		case 0x59: opcode_eor(state, addressing_absolutey(state)); break;
+		case 0x41: opcode_eor(state, addressing_indexedindirect(state)); break;
+		case 0x51: opcode_eor(state, addressing_indirectindexed(state)); break;
+
+		case 0x24: opcode_bit(state, addressing_zeropage(state)); break;
+		case 0x2c: opcode_bit(state, addressing_absolute(state)); break;
+
+		//
 		// JUMP
 		//
 

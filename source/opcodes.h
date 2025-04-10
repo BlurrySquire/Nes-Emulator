@@ -38,6 +38,12 @@ void opcode_rol_accumulator(cpu* state);
 void opcode_ror(cpu* state, u16 address);
 void opcode_ror_accumulator(cpu* state);
 
+// Bitwise
+void opcode_and(cpu* state, u16 address);
+void opcode_ora(cpu* state, u16 address);
+void opcode_eor(cpu* state, u16 address);
+void opcode_bit(cpu* state, u16 address);
+
 // Jump
 void opcode_jmp(cpu* state, u16 address);
 

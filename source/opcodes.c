@@ -269,6 +269,47 @@ void opcode_ror_accumulator(cpu* state) {
 }
 
 //
+// BITWISE
+//
+
+void opcode_and(cpu* state, u16 address) {
+	state->accumulator = state->accumulator & memory_read(address);
+
+	state->status.zero_flag = !state->accumulator;
+	state->status.negative_flag = state->accumulator & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_ora(cpu* state, u16 address) {
+	state->accumulator = state->accumulator | memory_read(address);
+
+	state->status.zero_flag = !state->accumulator;
+	state->status.negative_flag = state->accumulator & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_eor(cpu* state, u16 address) {
+	state->accumulator = state->accumulator ^ memory_read(address);
+
+	state->status.zero_flag = !state->accumulator;
+	state->status.negative_flag = state->accumulator & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_bit(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+
+	state->status.zero_flag = !(state->accumulator & value);
+	state->status.negative_flag = value & (1 << 7);
+	state->status.overflow_flag = value & (1 << 6);
+
+	state->current_instruction_cycles += 1;
+}
+
+//
 // STACK
 //
 
