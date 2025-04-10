@@ -167,6 +167,56 @@ void opcode_dey(cpu* state) {
 }
 
 //
+// SHIFT
+//
+
+void opcode_asl(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+	u8 result = value << 1;
+
+	memory_write(address, value);
+	memory_write(address, result);
+
+	state->status.carry_flag = value & (1 << 7);
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
+
+	state->current_instruction_cycles += 3;
+}
+
+void opcode_asl_accumulator(cpu* state) {
+	state->status.carry_flag = state->accumulator & (1 << 7);
+	state->accumulator = state->accumulator << 1;
+	state->status.zero_flag = !state->accumulator;
+	state->status.negative_flag = state->accumulator & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_lsr(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+	u8 result = value >> 1;
+
+	memory_write(address, value);
+	memory_write(address, result);
+
+	state->status.carry_flag = value & 1;
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
+
+	state->current_instruction_cycles += 3;
+}
+
+void opcode_lsr_accumulator(cpu* state) {
+	state->status.carry_flag = state->accumulator & 1;
+	state->accumulator = state->accumulator >> 1;
+	state->status.zero_flag = !state->accumulator;
+	state->status.negative_flag = state->accumulator & (1 << 7);
+
+	state->current_instruction_cycles += 3;
+}
+
+//
 // STACK
 //
 

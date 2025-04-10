@@ -8,7 +8,6 @@ u16 addressing_zeropage(cpu* state);
 u16 addressing_zeropagex(cpu* state);
 u16 addressing_zeropagey(cpu* state);
 u16 addressing_absolute(cpu* state);
-u16 addressing_absolute_address(cpu* state);
 u16 addressing_absolutex(cpu* state);
 u16 addressing_absolutey(cpu* state);
 u16 addressing_indirect(cpu* state);

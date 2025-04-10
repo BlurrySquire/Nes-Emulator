@@ -121,6 +121,22 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x88: opcode_dey(state); break;
 
 		//
+		// SHIFT
+		//
+
+		case 0x0A: opcode_asl_accumulator(state); break;
+		case 0x06: opcode_asl(state, addressing_zeropage(state)); break;
+		case 0x16: opcode_asl(state, addressing_zeropagex(state)); break;
+		case 0x0E: opcode_asl(state, addressing_absolute(state)); break;
+		case 0x1E: opcode_asl(state, addressing_absolutex(state)); break;
+
+		case 0x4A: opcode_lsr_accumulator(state); break;
+		case 0x46: opcode_lsr(state, addressing_zeropage(state)); break;
+		case 0x56: opcode_lsr(state, addressing_zeropagex(state)); break;
+		case 0x4E: opcode_lsr(state, addressing_absolute(state)); break;
+		case 0x5E: opcode_lsr(state, addressing_absolutex(state));
+
+		//
 		// JUMP
 		//
 
