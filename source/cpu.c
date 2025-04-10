@@ -15,13 +15,13 @@ void cpu_init(cpu* state) {
 	state->register_x = 0x00;
 	state->register_y = 0x00;
 
-	state->register_status.carry_flag = 0;
-	state->register_status.zero_flag = 0;
-	state->register_status.interrupt_disable = 0;
-	state->register_status.decimal_flag = 0;
-	state->register_status.overflow_flag = 0;
-	state->register_status.negative_flag = 0;
-	state->register_status.the_b_flag = 0;
+	state->status.carry_flag = 0;
+	state->status.zero_flag = 0;
+	state->status.interrupt_disable = 0;
+	state->status.decimal_flag = 0;
+	state->status.overflow_flag = 0;
+	state->status.negative_flag = 0;
+	state->status.break_flag = 0;
 
 	state->interrupt_flag = 0;
 }
@@ -156,10 +156,10 @@ void cpu_execute_instruction(cpu* state) {
 	// CLI & SEI have a 1 instruction delay.
 	if (state->instruction_delay == 0xFF) {
 		if (state->interrupt_flag == 0) {
-			state->register_status.interrupt_disable = 0;
+			state->status.interrupt_disable = 0;
 		}
 		else if (state->interrupt_flag == 1) {
-			state->register_status.interrupt_disable = 1;
+			state->status.interrupt_disable = 1;
 		}
 
 		state->instruction_delay = 0;

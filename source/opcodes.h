@@ -14,9 +14,8 @@ void opcode_sty(cpu* state, u16 address);
 // Transfer
 void opcode_tax(cpu* state);
 void opcode_tay(cpu* state);
-void opcode_tsx(cpu* state);
 void opcode_txa(cpu* state);
-void opcode_txs(cpu* state);
+
 void opcode_tya(cpu* state);
 
 // Arithmetic
@@ -31,6 +30,10 @@ void opcode_dey(cpu* state);
 
 // Jump
 void opcode_jmp(cpu* state, u16 address);
+
+// Stack
+void opcode_txs(cpu* state);
+void opcode_tsx(cpu* state);
 
 // Flags
 void opcode_clc(cpu* state);
