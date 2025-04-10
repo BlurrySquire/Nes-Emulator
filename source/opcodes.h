@@ -44,6 +44,11 @@ void opcode_ora(cpu* state, u16 address);
 void opcode_eor(cpu* state, u16 address);
 void opcode_bit(cpu* state, u16 address);
 
+// Compare
+void opcode_cmp(cpu* state, u16 address);
+void opcode_cpx(cpu* state, u16 address);
+void opcode_cpy(cpu* state, u16 address);
+
 // Jump
 void opcode_jmp(cpu* state, u16 address);
 

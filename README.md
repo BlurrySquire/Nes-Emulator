@@ -11,7 +11,7 @@ The instruction groups are referenced from nesdev wiki's instruction reference.
 - All arithmetic instructions
 - All shift instructions
 - All bitwise instructions
-- No compare instructions
+- All compare instructions
 - No branch instructions
 - Some jump instructions
 - All stack instructions

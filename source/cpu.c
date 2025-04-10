@@ -183,6 +183,27 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x2c: opcode_bit(state, addressing_absolute(state)); break;
 
 		//
+		// COMPARE
+		//
+
+		case 0xC9: opcode_cmp(state, addressing_immediate(state)); break;
+		case 0xC5: opcode_cmp(state, addressing_zeropage(state)); break;
+		case 0xD5: opcode_cmp(state, addressing_zeropagex(state)); break;
+		case 0xCD: opcode_cmp(state, addressing_absolute(state)); break;
+		case 0xDD: opcode_cmp(state, addressing_absolutex(state)); break;
+		case 0xD9: opcode_cmp(state, addressing_absolutey(state)); break;
+		case 0xC1: opcode_cmp(state, addressing_indexedindirect(state)); break;
+		case 0xD1: opcode_cmp(state, addressing_indirectindexed(state)); break;
+
+		case 0xE0: opcode_cpx(state, addressing_immediate(state)); break;
+		case 0xE4: opcode_cpx(state, addressing_zeropage(state)); break;
+		case 0xEC: opcode_cpx(state, addressing_absolute(state)); break;
+
+		case 0xC0: opcode_cpy(state, addressing_immediate(state)); break;
+		case 0xC4: opcode_cpy(state, addressing_zeropage(state)); break;
+		case 0xCC: opcode_cpy(state, addressing_absolute(state)); break;
+
+		//
 		// JUMP
 		//
 

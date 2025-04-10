@@ -310,6 +310,48 @@ void opcode_bit(cpu* state, u16 address) {
 }
 
 //
+// COMPARE
+//
+
+void opcode_cmp(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+
+	state->status.carry_flag = state->accumulator >= value;
+	state->status.zero_flag = state->accumulator == value;
+	state->status.negative_flag = (state->accumulator - value) & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_cpx(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+
+	state->status.carry_flag = state->register_x >= value;
+	state->status.zero_flag = state->register_x == value;
+	state->status.negative_flag = (state->register_x - value) & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+void opcode_cpy(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+
+	state->status.carry_flag = state->register_y >= value;
+	state->status.zero_flag = state->register_y == value;
+	state->status.negative_flag = (state->register_y - value) & (1 << 7);
+
+	state->current_instruction_cycles += 1;
+}
+
+//
+// JUMP
+//
+
+void opcode_jmp(cpu* state, u16 address) {
+	state->program_counter = address;
+}
+
+//
 // STACK
 //
 
@@ -355,14 +397,6 @@ void opcode_txs(cpu* state) {
 
 	state->status.zero_flag = !state->register_y;
 	state->status.negative_flag = state->register_y & (1 << 7);
-}
-
-//
-// JUMP
-//
-
-void opcode_jmp(cpu* state, u16 address) {
-	state->program_counter = address;
 }
 
 //
