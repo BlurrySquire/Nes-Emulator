@@ -51,6 +51,10 @@ void opcode_cpy(cpu* state, u16 address);
 
 // Jump
 void opcode_jmp(cpu* state, u16 address);
+void opcode_jsr(cpu* state, u16 address);
+void opcode_rts(cpu* state);
+void opcode_brk(cpu* state);
+void opcode_rti(cpu* state);
 
 // Stack
 void opcode_pha(cpu* state);

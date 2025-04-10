@@ -210,6 +210,11 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x4C: opcode_jmp(state, addressing_absolute(state)); break;
 		case 0x6C: opcode_jmp(state, addressing_indirect(state)); break;
 
+		case 0x20: opcode_jsr(state, addressing_absolute(state)); break;
+        case 0x60: opcode_rts(state); break;
+        case 0x00: opcode_brk(state); break;
+        case 0x40: opcode_rti(state); break;
+
 		//
 		// STACK
 		//

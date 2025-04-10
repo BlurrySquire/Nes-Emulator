@@ -13,7 +13,7 @@ The instruction groups are referenced from nesdev wiki's instruction reference.
 - All bitwise instructions
 - All compare instructions
 - No branch instructions
-- Some jump instructions
+- All jump instructions
 - All stack instructions
 - All flag instructions
 - All other instructions

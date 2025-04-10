@@ -351,6 +351,63 @@ void opcode_jmp(cpu* state, u16 address) {
 	state->program_counter = address;
 }
 
+void opcode_jsr(cpu* state, u16 address) {
+	state->program_counter--;
+	memory_write(state->stack_pointer + 0x0100, (state->program_counter & 0xFF00) >> 8);
+	state->stack_pointer--;
+	memory_write(state->stack_pointer + 0x0100, state->program_counter & 0x00FF);
+	state->stack_pointer--;
+
+	state->program_counter = address;
+
+	state->current_instruction_cycles += 3;
+}
+
+void opcode_rts(cpu* state) {
+	state->stack_pointer++;
+	u8 low = memory_read(state->stack_pointer + 0x0100);
+	state->stack_pointer++;
+	u8 high = memory_read(state->stack_pointer + 0x0100);
+
+	u16 address = (high << 8) | low;
+	state->program_counter = address + 1;
+
+	state->current_instruction_cycles += 3;
+}
+
+void opcode_brk(cpu* state) {
+	state->program_counter++;
+	memory_write(state->stack_pointer + 0x0100, (state->program_counter & 0xFF00) >> 8);
+	state->stack_pointer--;
+	memory_write(state->stack_pointer + 0x0100, state->program_counter & 0x00FF);
+	state->stack_pointer--;
+
+	state->status.break_flag = 1;
+	memory_write(state->stack_pointer + 0x0100, state->status.as_byte);
+	state->status.break_flag = 0;
+
+	state->status.interrupt_disable = 1;
+
+	u8 low = memory_read(0xFFFE);
+	u8 high = memory_read(0xFFFF);
+	state->program_counter = (low << 8) | high;
+
+	state->current_instruction_cycles += 6;
+}
+
+void opcode_rti(cpu* state) {
+	state->stack_pointer++;
+	state->status.as_byte = memory_read(state->stack_pointer + 0x0100);
+
+	state->stack_pointer++;
+    u8 low = memory_read(state->stack_pointer + 0x0100);
+    state->stack_pointer++;
+    u8 high = memory_read(state->stack_pointer + 0x0100);
+
+	state->program_counter = (high << 8) | low;
+	state->current_instruction_cycles += 5;
+}
+
 //
 // STACK
 //
