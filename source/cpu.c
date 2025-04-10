@@ -79,12 +79,12 @@ void cpu_execute_instruction(cpu* state) {
 
 		case 0xAA: opcode_tax(state); break;
 		case 0xA8: opcode_tay(state); break;
-		case 0xBA: opcode_tsx(state); break;
 		case 0x8A: opcode_txa(state); break;
-		case 0x9A: opcode_txs(state); break;
 		case 0x98: opcode_tya(state); break;
 		
+		//
 		// ARITHMETIC
+		//
 
 		case 0x69: opcode_adc(state, addressing_immediate(state)); break;
 		case 0x65: opcode_adc(state, addressing_zeropage(state)); break;
@@ -110,6 +110,13 @@ void cpu_execute_instruction(cpu* state) {
 
 		case 0x4C: opcode_jmp(state, addressing_absolute(state)); break;
 		case 0x6C: opcode_jmp(state, addressing_indirect(state)); break;
+
+		//
+		// STACK
+		//
+
+		case 0x9A: opcode_txs(state); break;
+		case 0xBA: opcode_tsx(state); break;
 
 		//
 		// FLAGS
