@@ -33,6 +33,10 @@ void opcode_asl(cpu* state, u16 address);
 void opcode_asl_accumulator(cpu* state);
 void opcode_lsr(cpu* state, u16 address);
 void opcode_lsr_accumulator(cpu* state);
+void opcode_rol(cpu* state, u16 address);
+void opcode_rol_accumulator(cpu* state);
+void opcode_ror(cpu* state, u16 address);
+void opcode_ror_accumulator(cpu* state);
 
 // Jump
 void opcode_jmp(cpu* state, u16 address);

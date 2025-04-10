@@ -9,7 +9,7 @@ The instruction groups are referenced from nesdev wiki's instruction reference.
 - All access instructions
 - All transfer instructions
 - All arithmetic instructions
-- No shift instructions
+- All shift instructions
 - No bitwise instructions
 - No compare instructions
 - No branch instructions

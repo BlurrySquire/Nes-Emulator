@@ -208,12 +208,64 @@ void opcode_lsr(cpu* state, u16 address) {
 }
 
 void opcode_lsr_accumulator(cpu* state) {
-	state->status.carry_flag = state->accumulator & 1;
-	state->accumulator = state->accumulator >> 1;
-	state->status.zero_flag = !state->accumulator;
-	state->status.negative_flag = state->accumulator & (1 << 7);
+	u8 value = state->accumulator;
+	u8 result = value >> 1;
+
+	state->accumulator = result;
+
+	state->status.carry_flag = value & 1;
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
 
 	state->current_instruction_cycles += 3;
+}
+
+void opcode_rol(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+	u8 result = (value << 1) | state->status.carry_flag;
+
+	memory_write(address, value);
+	memory_write(address, result);
+
+	state->status.carry_flag = value & (1 << 7);
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
+
+	state->current_instruction_cycles += 3;
+}
+
+void opcode_rol_accumulator(cpu* state) {
+	u8 value = state->accumulator;
+	u8 result = (value << 1) | state->status.carry_flag;
+
+	state->accumulator = result;
+
+	state->status.carry_flag = value & (1 << 7);
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
+}
+
+void opcode_ror(cpu* state, u16 address) {
+	u8 value = memory_read(address);
+	u8 result = (value >> 1) | (state->status.carry_flag << 7);
+
+	memory_write(address, value);
+	memory_write(address, result);
+
+	state->status.carry_flag = value & 1;
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
+}
+
+void opcode_ror_accumulator(cpu* state) {
+	u8 value = state->accumulator;
+	u8 result = (value >> 1) | (state->status.carry_flag << 7);
+
+	state->accumulator = result;
+
+	state->status.carry_flag = value & 1;
+	state->status.zero_flag = !result;
+	state->status.negative_flag = result & (1 << 7);
 }
 
 //
