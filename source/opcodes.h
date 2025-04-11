@@ -49,6 +49,16 @@ void opcode_cmp(cpu* state, u16 address);
 void opcode_cpx(cpu* state, u16 address);
 void opcode_cpy(cpu* state, u16 address);
 
+// Branch
+void opcode_bcc(cpu* state, i8 address);
+void opcode_bcs(cpu* state, i8 address);
+void opcode_beq(cpu* state, i8 address);
+void opcode_bne(cpu* state, i8 address);
+void opcode_bpl(cpu* state, i8 address);
+void opcode_bmi(cpu* state, i8 address);
+void opcode_bvc(cpu* state, i8 address);
+void opcode_bvs(cpu* state, i8 address);
+
 // Jump
 void opcode_jmp(cpu* state, u16 address);
 void opcode_jsr(cpu* state, u16 address);

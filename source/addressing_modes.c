@@ -1,4 +1,5 @@
 #include "addressing_modes.h"
+#include "memory_bus.h"
 
 u16 addressing_immediate(cpu* state) {
 	return state->program_counter++;
@@ -102,4 +103,12 @@ u16 addressing_indirectindexed(cpu* state) {
 	}
 
 	return address;
+}
+
+i8 addressing_relative(cpu* state) {
+	i8 value = (i8)memory_read(state->program_counter);
+	state->program_counter++;
+	state->current_instruction_cycles += 1;
+
+	return value;
 }

@@ -13,3 +13,4 @@ u16 addressing_absolutey(cpu* state);
 u16 addressing_indirect(cpu* state);
 u16 addressing_indexedindirect(cpu* state);
 u16 addressing_indirectindexed(cpu* state);
+i8 addressing_relative(cpu* state);

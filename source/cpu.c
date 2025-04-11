@@ -204,6 +204,19 @@ void cpu_execute_instruction(cpu* state) {
 		case 0xCC: opcode_cpy(state, addressing_absolute(state)); break;
 
 		//
+		// BRANCH
+		//
+
+		case 0x90: opcode_bcc(state, addressing_relative(state)); break;
+		case 0xB0: opcode_bcs(state, addressing_relative(state)); break;
+		case 0xF0: opcode_beq(state, addressing_relative(state)); break;
+		case 0xD0: opcode_bne(state, addressing_relative(state)); break;
+		case 0x10: opcode_bpl(state, addressing_relative(state)); break;
+		case 0x30: opcode_bmi(state, addressing_relative(state)); break;
+		case 0x50: opcode_bvc(state, addressing_relative(state)); break;
+		case 0x70: opcode_bvs(state, addressing_relative(state)); break;
+
+		//
 		// JUMP
 		//
 
