@@ -17,16 +17,27 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install build tools
-        run: sudo apt-get install -y build-essential cmake zip
+        run: sudo apt-get install -y build-essential cmake zip curl unzip
 
-      - name: Install dependencies
-        run: sudo apt-get install -y libsdl2-dev
+      - name: Download and build SDL3
+        run: |
+          curl -LO https://github.com/libsdl-org/SDL/releases/download/release-3.2.10/SDL3-3.2.10.zip
+          unzip SDL3-3.2.10.zip
+          cd SDL3-3.2.10
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/SDL3-installed
+          make -j$(nproc)
+          make install
 
       - name: Configure CMake (${{ matrix.config }})
         run: |
           mkdir -p build-${{ matrix.config }}
           cd build-${{ matrix.config }}
-          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DSDL2_DIR=/usr/lib/cmake/SDL2
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
+            -DSDL3_DIR=$GITHUB_WORKSPACE/SDL3-installed/lib/cmake/SDL3 \
+            -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/SDL3-installed
 
       - name: Build
         run: |
@@ -39,6 +50,7 @@ jobs:
           mkdir package
           cp NesEmu package/
           cp ../README.md package/
+          cp $GITHUB_WORKSPACE/SDL3-installed/lib/libSDL3.so* package/ || true
           cd package
           zip -r ../../linux-${{ matrix.config }}.zip .
 
