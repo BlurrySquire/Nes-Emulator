@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 		#ifndef NDEBUG
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "CPU State:\n");
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
-				"PC: 0x%04X, SP: 0x%02x\n",
+				"PC: 0x%04X, SP: 0x%02X\n",
 				cpu_state.program_counter, cpu_state.stack_pointer
 			);
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
