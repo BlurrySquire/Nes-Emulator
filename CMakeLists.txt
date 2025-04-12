@@ -12,5 +12,5 @@ add_executable(NesEmu
 	source/cartridge.c
 )
 
-find_package(SDL2 REQUIRED)
-target_link_libraries(NesEmu PRIVATE SDL2::SDL2 SDL2::SDL2main)
+find_package(SDL3 REQUIRED)
+target_link_libraries(NesEmu PRIVATE SDL3::SDL3)

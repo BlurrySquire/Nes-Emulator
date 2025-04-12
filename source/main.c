@@ -1,19 +1,20 @@
-#include <SDL.h>
-#include <SDL_main.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
 #include "memory_bus.h"
 #include "cartridge.h"
 #include "cpu.h"
 
 int main(int argc, char* argv[]) {
-	SDL_Init(SDL_INIT_VIDEO);
+	SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 	SDL_Window* window = SDL_CreateWindow(
 		"Nes-Emulator",
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		256, 240,
-		SDL_WINDOW_SHOWN
+		SDL_WINDOW_HIDDEN
 	);
+	SDL_ShowWindow(window);
 
 	if (window == NULL) {
 		SDL_Quit();
@@ -26,22 +27,25 @@ int main(int argc, char* argv[]) {
 	cpu cpu_state;
 	cpu_init(&cpu_state);
 	
-	SDL_bool running = SDL_TRUE;
-	while (running == SDL_TRUE) {
+	bool running = true;
+	while (running == true) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				running = SDL_FALSE;
+			if (event.type == SDL_EVENT_QUIT) {
+				running = false;
 			}
 		}
 
 		cpu_execute_instruction(&cpu_state);
-	}
 
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Program Counter: %i", cpu_state.program_counter);
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Accumulator: %i", cpu_state.accumulator);
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Register X: %i", cpu_state.register_x);
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Register Y: %i", cpu_state.register_y);
+		#ifndef NDEBUG
+			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "CPU State:\n");
+			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
+				"PC: 0x%04X, A: 0x%02X, X: 0x%02X, Y: 0x%02X \n\n",
+				cpu_state.program_counter, cpu_state.accumulator, cpu_state.register_x, cpu_state.register_y
+			);
+		#endif
+	}
 
 	SDL_Quit();
 	return 0;
