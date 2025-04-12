@@ -80,7 +80,7 @@ jobs:
           mkdir package
           cp ${{ matrix.config }}/NesEmu.exe package/
           cp ../README.md package/
-          cp C:/SDL2/SDL2-3.2.10/lib/x64/SDL3.dll package/
+          cp C:/SDL3/SDL3-3.2.10/lib/x64/SDL3.dll package/
           cd package
           Compress-Archive -Path * -DestinationPath ../../windows-${{ matrix.config }}.zip
 
