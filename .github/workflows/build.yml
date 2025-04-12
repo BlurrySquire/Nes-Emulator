@@ -59,15 +59,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-3.2.10/SDL3-devel-3.2.10-VC.zip" -OutFile "SDL2.zip"
-          Expand-Archive -Path SDL2.zip -DestinationPath C:\SDL2
-          Remove-Item -Force SDL2.zip
+          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-3.2.10/SDL3-devel-3.2.10-VC.zip" -OutFile "SDL3.zip"
+          Expand-Archive -Path SDL3.zip -DestinationPath C:\SDL3
+          Remove-Item -Force SDL3.zip
 
       - name: Configure CMake (${{ matrix.config }})
         run: |
             mkdir -p build-${{ matrix.config }}
             cd build-${{ matrix.config }}
-            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" -DSDL2_DIR=C:/SDL2/SDL2-2.26.5/cmake
+            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" -DSDL3_DIR=C:/SDL3/SDL3-3.2.10/cmake
 
       - name: Build
         run: |
@@ -80,7 +80,7 @@ jobs:
           mkdir package
           cp ${{ matrix.config }}/NesEmu.exe package/
           cp ../README.md package/
-          cp C:/SDL2/SDL2-2.26.5/lib/x64/SDL2.dll package/
+          cp C:/SDL2/SDL2-3.2.10/lib/x64/SDL3.dll package/
           cd package
           Compress-Archive -Path * -DestinationPath ../../windows-${{ matrix.config }}.zip
 
