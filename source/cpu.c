@@ -98,12 +98,10 @@ void opcode_clv(cpu* state);
 void opcode_nop(cpu* state);
 
 void cpu_init(cpu* state) {
-	cpubus_init();
-
 	state->total_cycles = 0;
 	state->current_instruction_cycles = 0;
 	
-	state->program_counter = 0x0000;
+	state->program_counter = (cpubus_read(0xFFFD) << 8) | cpubus_read(0xFFFC);
 	state->stack_pointer = 0xFD;
 
 	state->accumulator = 0x00;

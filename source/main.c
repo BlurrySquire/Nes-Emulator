@@ -22,7 +22,19 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
+	cpubus_init();
 	cartridge_init("test.nes");
+	
+	cpubus_write(0xFFFC, 0x00);
+	cpubus_write(0xFFFD, 0xF0);
+
+	cpubus_write(0xF000, 0xA2); // LDA Immediate 0xFF
+	cpubus_write(0xF001, 0xFF);
+	cpubus_write(0xF002, 0x9A); // TXS
+	cpubus_write(0xF003, 0xEA); // NOP
+	cpubus_write(0xF004, 0x4C); // JMP Absolute 0xF003
+	cpubus_write(0xF005, 0x03);
+	cpubus_write(0xF006, 0xF0);
 
 	cpu cpu_state;
 	cpu_init(&cpu_state);
@@ -41,8 +53,18 @@ int main(int argc, char* argv[]) {
 		#ifndef NDEBUG
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "CPU State:\n");
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
-				"PC: 0x%04X, A: 0x%02X, X: 0x%02X, Y: 0x%02X \n\n",
-				cpu_state.program_counter, cpu_state.accumulator, cpu_state.register_x, cpu_state.register_y
+				"PC: 0x%04X, SP: 0x%02x\n",
+				cpu_state.program_counter, cpu_state.stack_pointer
+			);
+			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
+				"A: 0x%02X, X: 0x%02X, Y: 0x%02X\n",
+				cpu_state.accumulator, cpu_state.register_x, cpu_state.register_y
+			);
+			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
+				"N: %i, V: %i, B: %i, D: %i, I: %i, Z: %i, C: %i",
+				cpu_state.status.negative_flag, cpu_state.status.overflow_flag, cpu_state.status.break_flag,
+				cpu_state.status.decimal_flag, cpu_state.status.interrupt_disable, cpu_state.status.zero_flag,
+				cpu_state.status.carry_flag
 			);
 		#endif
 	}
