@@ -9,8 +9,6 @@ add_executable(NesEmu
 	source/main.c
 	source/memory_bus.c
 	source/cpu.c
-	source/addressing_modes.c
-	source/opcodes.c
 )
 
 find_package(SDL2 REQUIRED)
