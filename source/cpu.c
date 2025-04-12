@@ -495,7 +495,7 @@ void opcode_lda(cpu* state, u16 address) {
 }
 
 void opcode_sta(cpu* state, u16 address) {
-	memory_write(address, state->accumulator);
+	cpubus_write(address, state->accumulator);
 	state->current_instruction_cycles += 1;
 }
 
@@ -508,7 +508,7 @@ void opcode_ldx(cpu* state, u16 address) {
 }
 
 void opcode_stx(cpu* state, u16 address) {
-	memory_write(address, state->register_x);
+	cpubus_write(address, state->register_x);
 	state->current_instruction_cycles += 1;
 }
 
@@ -521,7 +521,7 @@ void opcode_ldy(cpu* state, u16 address) {
 }
 
 void opcode_sty(cpu* state, u16 address) {
-	memory_write(address, state->register_y);
+	cpubus_write(address, state->register_y);
 	state->current_instruction_cycles += 1;
 }
 
@@ -595,8 +595,8 @@ void opcode_inc(cpu* state, u16 address) {
 	u8 value = cpubus_read(address);
 	u8 result = value + 1;
 
-	memory_write(address, value);
-	memory_write(address, result);
+	cpubus_write(address, value);
+	cpubus_write(address, result);
 	state->current_instruction_cycles += 3;
 
 	state->status.zero_flag = !result;
@@ -607,8 +607,8 @@ void opcode_dec(cpu* state, u16 address) {
 	u8 value = cpubus_read(address);
 	u8 result = value - 1;
 
-	memory_write(address, value);
-	memory_write(address, result);
+	cpubus_write(address, value);
+	cpubus_write(address, result);
 	state->current_instruction_cycles += 3;
 
 	state->status.zero_flag = !result;
@@ -655,8 +655,8 @@ void opcode_asl(cpu* state, u16 address) {
 	u8 value = cpubus_read(address);
 	u8 result = value << 1;
 
-	memory_write(address, value);
-	memory_write(address, result);
+	cpubus_write(address, value);
+	cpubus_write(address, result);
 
 	state->status.carry_flag = value & (1 << 7);
 	state->status.zero_flag = !result;
@@ -678,8 +678,8 @@ void opcode_lsr(cpu* state, u16 address) {
 	u8 value = cpubus_read(address);
 	u8 result = value >> 1;
 
-	memory_write(address, value);
-	memory_write(address, result);
+	cpubus_write(address, value);
+	cpubus_write(address, result);
 
 	state->status.carry_flag = value & 1;
 	state->status.zero_flag = !result;
@@ -705,8 +705,8 @@ void opcode_rol(cpu* state, u16 address) {
 	u8 value = cpubus_read(address);
 	u8 result = (value << 1) | state->status.carry_flag;
 
-	memory_write(address, value);
-	memory_write(address, result);
+	cpubus_write(address, value);
+	cpubus_write(address, result);
 
 	state->status.carry_flag = value & (1 << 7);
 	state->status.zero_flag = !result;
@@ -730,8 +730,8 @@ void opcode_ror(cpu* state, u16 address) {
 	u8 value = cpubus_read(address);
 	u8 result = (value >> 1) | (state->status.carry_flag << 7);
 
-	memory_write(address, value);
-	memory_write(address, result);
+	cpubus_write(address, value);
+	cpubus_write(address, result);
 
 	state->status.carry_flag = value & 1;
 	state->status.zero_flag = !result;
@@ -950,9 +950,9 @@ void opcode_jmp(cpu* state, u16 address) {
 
 void opcode_jsr(cpu* state, u16 address) {
 	state->program_counter--;
-	memory_write(state->stack_pointer + 0x0100, (state->program_counter & 0xFF00) >> 8);
+	cpubus_write(state->stack_pointer + 0x0100, (state->program_counter & 0xFF00) >> 8);
 	state->stack_pointer--;
-	memory_write(state->stack_pointer + 0x0100, state->program_counter & 0x00FF);
+	cpubus_write(state->stack_pointer + 0x0100, state->program_counter & 0x00FF);
 	state->stack_pointer--;
 
 	state->program_counter = address;
@@ -974,13 +974,13 @@ void opcode_rts(cpu* state) {
 
 void opcode_brk(cpu* state) {
 	state->program_counter++;
-	memory_write(state->stack_pointer + 0x0100, (state->program_counter & 0xFF00) >> 8);
+	cpubus_write(state->stack_pointer + 0x0100, (state->program_counter & 0xFF00) >> 8);
 	state->stack_pointer--;
-	memory_write(state->stack_pointer + 0x0100, state->program_counter & 0x00FF);
+	cpubus_write(state->stack_pointer + 0x0100, state->program_counter & 0x00FF);
 	state->stack_pointer--;
 
 	state->status.break_flag = 1;
-	memory_write(state->stack_pointer + 0x0100, state->status.as_byte);
+	cpubus_write(state->stack_pointer + 0x0100, state->status.as_byte);
 	state->status.break_flag = 0;
 
 	state->status.interrupt_disable = 1;
@@ -1010,7 +1010,7 @@ void opcode_rti(cpu* state) {
 //
 
 void opcode_pha(cpu* state) {
-	memory_write(state->stack_pointer + 0x0100, state->accumulator);
+	cpubus_write(state->stack_pointer + 0x0100, state->accumulator);
 	state->stack_pointer--;
 
 	state->current_instruction_cycles += 1;
@@ -1024,7 +1024,7 @@ void opcode_pla(cpu* state) {
 }
 
 void opcode_php(cpu* state) {
-	memory_write(state->stack_pointer + 0x0100, state->status.as_byte);
+	cpubus_write(state->stack_pointer + 0x0100, state->status.as_byte);
 	state->stack_pointer--;
 
 	state->current_instruction_cycles += 1;
