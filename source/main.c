@@ -39,6 +39,7 @@ int main(int argc, char* argv[]) {
 	cpu cpu_state;
 	cpu_init(&cpu_state);
 	
+	int runs = 0;
 	bool running = true;
 	while (running == true) {
 		SDL_Event event;
@@ -47,8 +48,6 @@ int main(int argc, char* argv[]) {
 				running = false;
 			}
 		}
-
-		cpu_execute_instruction(&cpu_state);
 
 		#ifndef NDEBUG
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "CPU State:\n");
@@ -61,12 +60,19 @@ int main(int argc, char* argv[]) {
 				cpu_state.accumulator, cpu_state.register_x, cpu_state.register_y
 			);
 			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
-				"N: %i, V: %i, B: %i, D: %i, I: %i, Z: %i, C: %i",
+				"N: %i, V: %i, B: %i, D: %i, I: %i, Z: %i, C: %i\n\n",
 				cpu_state.status.negative_flag, cpu_state.status.overflow_flag, cpu_state.status.break_flag,
 				cpu_state.status.decimal_flag, cpu_state.status.interrupt_disable, cpu_state.status.zero_flag,
 				cpu_state.status.carry_flag
 			);
 		#endif
+
+		cpu_execute_instruction(&cpu_state);
+
+		if (runs == 5) {
+			exit(-1);
+		}
+		runs++;
 	}
 
 	SDL_Quit();
