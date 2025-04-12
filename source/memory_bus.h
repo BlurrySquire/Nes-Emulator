@@ -2,10 +2,10 @@
 
 #include "types.h"
 
-void memory_init();
+void cpubus_init();
+u8 cpubus_read(u16 address);
+void cpubus_write(u16 address, u8 value);
 
-void memory_write(u16 location, u8 data);
-u8 memory_read(u16 location);
-
-void video_memory_write(u16 location, u8 data);
-u8 video_memory_read(u16 location);
+void ppubus_init();
+u8 ppubus_read(u16 address);
+void ppubus_write(u16 address, u8 value);

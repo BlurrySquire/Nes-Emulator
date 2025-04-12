@@ -1,76 +1,77 @@
 #include "memory_bus.h"
 
-#include <stdlib.h>
+static u8 cpu_memory[0x07FF];
+static u8 ppu_memory[0x07FF];
 
-static u8 system_memory[SYSTEM_MEMORY_SIZE];
-static u8 cartridge_space[CARTRIDGE_SIZE];
-static u8 video_memory[VIDEO_MEMORY_SIZE];
-
-void memory_init() {
-	for (u16 i = 0; i < SYSTEM_MEMORY_SIZE; i++) {
-		system_memory[i] = 0x00;
-	}
-
-	for (u16 i = 0; i < CARTRIDGE_SIZE; i++) {
-		cartridge_space[i] = 0x00;
-	}
-
-	for (u16 i = 0; i < VIDEO_MEMORY_SIZE; i++) {
-		video_memory[i] = 0x00;
+void cpubus_init() {
+	for (u16 i = 0; i < 0x07FF; i++) {
+		cpu_memory[i] = 0x00;
 	}
 }
 
-void memory_write(u16 location, u8 data) {
-	if (location < SYSTEM_MEMORY_SIZE * 4) {
-		system_memory[location % SYSTEM_MEMORY_SIZE] = data;
+u8 cpubus_read(u16 address) {
+	// 0x0000-0x1FFF CPU RAM
+	if ((address & 0x07FF) < 0x07FF && address < 0x1FFF) {
+		return cpu_memory[address & 0x07FF];
 	}
-	else if (location >= 0x2000 && location <= 0x2007) {
-		// PPU Registers
+	// 0x2000-0x3FFF PPU Registers
+	else if (address >= 0x2000 && address <= 0x3FFF) {
+		return 0x00;
 	}
-	else if (location >= 0x4000 && location <= 0x4017) {
-		// APU and I/O Registers
+	// 0x4000-0x4017 APU & I/O Registers
+	else if (address >= 0x4000 && address <= 0x4017) {
+		return 0x00;
 	}
-	else if (location >= 0x4018 && location <= 0x401F) {
-		// APU and I/O functionality that is disabled normally
+	// 0x4018-0x401F APU & I/O functionality from test mode
+	else if (address >= 0x4018 && address <= 0x401F) {
+		return 0x00;
 	}
-	else { // 0x4020-0xFFFF
+	// 0x4020-0xFFFF Cartridge use
+	else {
+		return 0x00;
+	}
+}
+
+void cpubus_write(u16 address, u8 value) {
+	// 0x0000-0x1FFF CPU RAM
+	if ((address & 0x07FF) < 0x07FF && address < 0x1FFF) {
+		cpu_memory[address & 0x07FF] = value;
+	}
+	// 0x2000-0x3FFF PPU Registers
+	else if (address >= 0x2000 && address <= 0x3FFF) {
+		// Write to PPU Registers
+	}
+	// 0x4000-0x4017 APU & I/O Registers
+	else if (address >= 0x4000 && address <= 0x4017) {
+		// Write to APU or I/O Registers
+	}
+	// 0x4018-0x401F APU & I/O functionality from test mode
+	else if (address >= 0x4018 && address <= 0x401F) {
+		// test mode
+	}
+	// 0x4020-0xFFFF Cartridge use
+	else {
 		// Cartridge
 	}
 }
 
-u8 memory_read(u16 location) {
-	if (location < SYSTEM_MEMORY_SIZE * 4) {
-		return system_memory[location % SYSTEM_MEMORY_SIZE];
-	}
-	else if (location >= 0x2000 && location <= 0x2007) {
-		// PPU Registers
-		return 0x00;
-	}
-	else if (location >= 0x4000 && location <= 0x4017) {
-		// APU and I/O Registers
-		return 0x00;
-	}
-	else if (location >= 0x4018 && location <= 0x401F) {
-		// APU and I/O functionality that is disabled normally
-		return 0x00;
-	}
-	else { // 0x4020-0xFFFF
-		// Cartridge
-		return 0x00;
+void ppubus_init() {
+	for (u16 i = 0; i < 0x07FF; i++) {
+		ppu_memory[i] = 0x00;
 	}
 }
 
-void video_memory_write(u16 location, u8 data) {
-	if (location < VIDEO_MEMORY_SIZE) {
-		video_memory[location] = data;
-	}
-}
-
-u8 video_memory_read(u16 location) {
-	if (location < VIDEO_MEMORY_SIZE) {
-		return video_memory[location];
+u8 ppubus_read(u16 address) {
+	if (address < 0x07FF) {
+		return ppu_memory[address];
 	}
 	else {
 		return 0x00;
+	}
+}
+
+void ppubus_write(u16 address, u8 value) {
+	if (address < 0x07FF) {
+		ppu_memory[address] = value;
 	}
 }

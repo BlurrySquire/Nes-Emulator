@@ -1,9 +1,5 @@
 #pragma once
 
-#define SYSTEM_MEMORY_SIZE 2048
-#define VIDEO_MEMORY_SIZE 2048
-#define CARTRIDGE_SIZE 49152
-
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;

@@ -98,6 +98,8 @@ void opcode_clv(cpu* state);
 void opcode_nop(cpu* state);
 
 void cpu_init(cpu* state) {
+	cpubus_init();
+
 	state->total_cycles = 0;
 	state->current_instruction_cycles = 0;
 	
@@ -120,7 +122,7 @@ void cpu_init(cpu* state) {
 }
 
 void cpu_execute_instruction(cpu* state) {
-	u8 instruction = memory_read(state->program_counter);
+	u8 instruction = cpubus_read(state->program_counter);
 	state->program_counter++;
 	state->current_instruction_cycles += 1;
 
@@ -373,7 +375,7 @@ u16 addressing_immediate(cpu* state) {
 }
 
 u16 addressing_zeropage(cpu* state) {
-	u8 address = memory_read(state->program_counter);
+	u8 address = cpubus_read(state->program_counter);
 	state->program_counter++;
 	state->current_instruction_cycles += 1;
 
@@ -381,7 +383,7 @@ u16 addressing_zeropage(cpu* state) {
 }
 
 u16 addressing_zeropagex(cpu* state) {
-	u8 address = memory_read(state->program_counter) + state->register_x;
+	u8 address = cpubus_read(state->program_counter) + state->register_x;
 	state->program_counter++;
 	state->current_instruction_cycles += 2;
 
@@ -389,7 +391,7 @@ u16 addressing_zeropagex(cpu* state) {
 }
 
 u16 addressing_zeropagey(cpu* state) {
-	u8 address = memory_read(state->program_counter) + state->register_y;
+	u8 address = cpubus_read(state->program_counter) + state->register_y;
 	state->program_counter++;
 	state->current_instruction_cycles += 2;
 
@@ -397,7 +399,7 @@ u16 addressing_zeropagey(cpu* state) {
 }
 
 u16 addressing_absolute(cpu* state) {
-	u16 address = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
+	u16 address = cpubus_read(state->program_counter) | (cpubus_read(state->program_counter + 1) << 8);
 	state->program_counter += 2;
 	state->current_instruction_cycles += 2;
 
@@ -405,7 +407,7 @@ u16 addressing_absolute(cpu* state) {
 }
 
 u16 addressing_absolutex(cpu* state) {
-	u16 base = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
+	u16 base = cpubus_read(state->program_counter) | (cpubus_read(state->program_counter + 1) << 8);
 	u16 address = base + state->register_x;
 	state->program_counter += 2;
 	state->current_instruction_cycles += 3;
@@ -418,7 +420,7 @@ u16 addressing_absolutex(cpu* state) {
 }
 
 u16 addressing_absolutey(cpu* state) {
-	u16 base = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
+	u16 base = cpubus_read(state->program_counter) | (cpubus_read(state->program_counter + 1) << 8);
 	u16 address = base + state->register_y;
 	state->program_counter += 2;
 	state->current_instruction_cycles += 3;
@@ -431,37 +433,37 @@ u16 addressing_absolutey(cpu* state) {
 }
 
 u16 addressing_indirect(cpu* state) {
-	u16 pointer = memory_read(state->program_counter) | (memory_read(state->program_counter + 1) << 8);
+	u16 pointer = cpubus_read(state->program_counter) | (cpubus_read(state->program_counter + 1) << 8);
 
-	u8 low = memory_read(pointer);
+	u8 low = cpubus_read(pointer);
 	u8 high;
 
 	// Bug where if low byte on page boundary then high byte wraps around to page start
 	if ((pointer & 0x00FF) == 0x00FF) {
-		high = memory_read(pointer & 0xFF00);
+		high = cpubus_read(pointer & 0xFF00);
 	}
 	else {
-		high = memory_read(pointer + 1);
+		high = cpubus_read(pointer + 1);
 	}
 
 	return (high << 8) | low;
 }
 
 u16 addressing_indexedindirect(cpu* state) {
-	u8 pointer = memory_read(state->program_counter) + state->register_x;
+	u8 pointer = cpubus_read(state->program_counter) + state->register_x;
 	state->program_counter++;
 
-	u16 address = memory_read(pointer) | (memory_read(pointer + 1) << 8);
+	u16 address = cpubus_read(pointer) | (cpubus_read(pointer + 1) << 8);
 	state->current_instruction_cycles += 4;
 
 	return address;
 }
 
 u16 addressing_indirectindexed(cpu* state) {
-	u8 pointer = memory_read(state->program_counter);
+	u8 pointer = cpubus_read(state->program_counter);
 	state->program_counter++;
 
-	u16 base = memory_read(pointer) | (memory_read(pointer + 1) << 8);
+	u16 base = cpubus_read(pointer) | (cpubus_read(pointer + 1) << 8);
 	u16 address = base + state->register_y;
 
 	state->current_instruction_cycles += 4;
@@ -473,7 +475,7 @@ u16 addressing_indirectindexed(cpu* state) {
 }
 
 i8 addressing_relative(cpu* state) {
-	i8 value = (i8)memory_read(state->program_counter);
+	i8 value = (i8)cpubus_read(state->program_counter);
 	state->program_counter++;
 	state->current_instruction_cycles += 1;
 
@@ -485,7 +487,7 @@ i8 addressing_relative(cpu* state) {
 //
 
 void opcode_lda(cpu* state, u16 address) {
-	state->accumulator = memory_read(address);
+	state->accumulator = cpubus_read(address);
 	state->current_instruction_cycles += 1;
 
 	state->status.zero_flag = !state->accumulator;
@@ -498,7 +500,7 @@ void opcode_sta(cpu* state, u16 address) {
 }
 
 void opcode_ldx(cpu* state, u16 address) {
-	state->register_x = memory_read(address);
+	state->register_x = cpubus_read(address);
 	state->current_instruction_cycles += 1;
 
 	state->status.zero_flag = !state->register_x;
@@ -511,7 +513,7 @@ void opcode_stx(cpu* state, u16 address) {
 }
 
 void opcode_ldy(cpu* state, u16 address) {
-	state->register_y = memory_read(address);
+	state->register_y = cpubus_read(address);
 	state->current_instruction_cycles += 1;
 
 	state->status.zero_flag = !state->register_y;
@@ -564,7 +566,7 @@ void opcode_tya(cpu* state) {
 //
 
 void opcode_adc(cpu* state, u16 address) {
-	u8 memory = memory_read(address);
+	u8 memory = cpubus_read(address);
 	u16 result = state->accumulator + memory + state->status.carry_flag;
 	state->current_instruction_cycles += 1;
 
@@ -577,7 +579,7 @@ void opcode_adc(cpu* state, u16 address) {
 }
 
 void opcode_sbc(cpu* state, u16 address) {
-	u8 memory = memory_read(address);
+	u8 memory = cpubus_read(address);
 	u16 result = state->accumulator - memory - (1 - state->status.carry_flag);
 	state->current_instruction_cycles += 1;
 
@@ -590,7 +592,7 @@ void opcode_sbc(cpu* state, u16 address) {
 }
 
 void opcode_inc(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 	u8 result = value + 1;
 
 	memory_write(address, value);
@@ -602,7 +604,7 @@ void opcode_inc(cpu* state, u16 address) {
 }
 
 void opcode_dec(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 	u8 result = value - 1;
 
 	memory_write(address, value);
@@ -650,7 +652,7 @@ void opcode_dey(cpu* state) {
 //
 
 void opcode_asl(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 	u8 result = value << 1;
 
 	memory_write(address, value);
@@ -673,7 +675,7 @@ void opcode_asl_accumulator(cpu* state) {
 }
 
 void opcode_lsr(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 	u8 result = value >> 1;
 
 	memory_write(address, value);
@@ -700,7 +702,7 @@ void opcode_lsr_accumulator(cpu* state) {
 }
 
 void opcode_rol(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 	u8 result = (value << 1) | state->status.carry_flag;
 
 	memory_write(address, value);
@@ -725,7 +727,7 @@ void opcode_rol_accumulator(cpu* state) {
 }
 
 void opcode_ror(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 	u8 result = (value >> 1) | (state->status.carry_flag << 7);
 
 	memory_write(address, value);
@@ -752,7 +754,7 @@ void opcode_ror_accumulator(cpu* state) {
 //
 
 void opcode_and(cpu* state, u16 address) {
-	state->accumulator = state->accumulator & memory_read(address);
+	state->accumulator = state->accumulator & cpubus_read(address);
 
 	state->status.zero_flag = !state->accumulator;
 	state->status.negative_flag = state->accumulator & (1 << 7);
@@ -761,7 +763,7 @@ void opcode_and(cpu* state, u16 address) {
 }
 
 void opcode_ora(cpu* state, u16 address) {
-	state->accumulator = state->accumulator | memory_read(address);
+	state->accumulator = state->accumulator | cpubus_read(address);
 
 	state->status.zero_flag = !state->accumulator;
 	state->status.negative_flag = state->accumulator & (1 << 7);
@@ -770,7 +772,7 @@ void opcode_ora(cpu* state, u16 address) {
 }
 
 void opcode_eor(cpu* state, u16 address) {
-	state->accumulator = state->accumulator ^ memory_read(address);
+	state->accumulator = state->accumulator ^ cpubus_read(address);
 
 	state->status.zero_flag = !state->accumulator;
 	state->status.negative_flag = state->accumulator & (1 << 7);
@@ -779,7 +781,7 @@ void opcode_eor(cpu* state, u16 address) {
 }
 
 void opcode_bit(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 
 	state->status.zero_flag = !(state->accumulator & value);
 	state->status.negative_flag = value & (1 << 7);
@@ -793,7 +795,7 @@ void opcode_bit(cpu* state, u16 address) {
 //
 
 void opcode_cmp(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 
 	state->status.carry_flag = state->accumulator >= value;
 	state->status.zero_flag = state->accumulator == value;
@@ -803,7 +805,7 @@ void opcode_cmp(cpu* state, u16 address) {
 }
 
 void opcode_cpx(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 
 	state->status.carry_flag = state->register_x >= value;
 	state->status.zero_flag = state->register_x == value;
@@ -813,7 +815,7 @@ void opcode_cpx(cpu* state, u16 address) {
 }
 
 void opcode_cpy(cpu* state, u16 address) {
-	u8 value = memory_read(address);
+	u8 value = cpubus_read(address);
 
 	state->status.carry_flag = state->register_y >= value;
 	state->status.zero_flag = state->register_y == value;
@@ -960,9 +962,9 @@ void opcode_jsr(cpu* state, u16 address) {
 
 void opcode_rts(cpu* state) {
 	state->stack_pointer++;
-	u8 low = memory_read(state->stack_pointer + 0x0100);
+	u8 low = cpubus_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
-	u8 high = memory_read(state->stack_pointer + 0x0100);
+	u8 high = cpubus_read(state->stack_pointer + 0x0100);
 
 	u16 address = (high << 8) | low;
 	state->program_counter = address + 1;
@@ -983,8 +985,8 @@ void opcode_brk(cpu* state) {
 
 	state->status.interrupt_disable = 1;
 
-	u8 low = memory_read(0xFFFE);
-	u8 high = memory_read(0xFFFF);
+	u8 low = cpubus_read(0xFFFE);
+	u8 high = cpubus_read(0xFFFF);
 	state->program_counter = (low << 8) | high;
 
 	state->current_instruction_cycles += 6;
@@ -992,12 +994,12 @@ void opcode_brk(cpu* state) {
 
 void opcode_rti(cpu* state) {
 	state->stack_pointer++;
-	state->status.as_byte = memory_read(state->stack_pointer + 0x0100);
+	state->status.as_byte = cpubus_read(state->stack_pointer + 0x0100);
 
 	state->stack_pointer++;
-    u8 low = memory_read(state->stack_pointer + 0x0100);
+    u8 low = cpubus_read(state->stack_pointer + 0x0100);
     state->stack_pointer++;
-    u8 high = memory_read(state->stack_pointer + 0x0100);
+    u8 high = cpubus_read(state->stack_pointer + 0x0100);
 
 	state->program_counter = (high << 8) | low;
 	state->current_instruction_cycles += 5;
@@ -1015,7 +1017,7 @@ void opcode_pha(cpu* state) {
 }
 
 void opcode_pla(cpu* state) {
-	state->accumulator = memory_read(state->stack_pointer + 0x0100);
+	state->accumulator = cpubus_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
 
 	state->current_instruction_cycles += 1;
@@ -1029,7 +1031,7 @@ void opcode_php(cpu* state) {
 }
 
 void opcode_plp(cpu* state) {
-	state->status.as_byte = memory_read(state->stack_pointer + 0x0100);
+	state->status.as_byte = cpubus_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
 
 	state->current_instruction_cycles += 1;
