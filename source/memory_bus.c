@@ -1,4 +1,5 @@
 #include "memory_bus.h"
+#include "cartridge.h"
 
 static u8 cpu_memory[0x07FF];
 static u8 ppu_memory[0x07FF];
@@ -28,7 +29,7 @@ u8 cpubus_read(u16 address) {
 	}
 	// 0x4020-0xFFFF Cartridge use
 	else {
-		return 0x00;
+		return cartridge_read(address - 0x4020);
 	}
 }
 
@@ -51,7 +52,7 @@ void cpubus_write(u16 address, u8 value) {
 	}
 	// 0x4020-0xFFFF Cartridge use
 	else {
-		// Cartridge
+		cartridge_write(address - 0x4020, value);
 	}
 }
 

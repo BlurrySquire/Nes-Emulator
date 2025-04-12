@@ -2,6 +2,7 @@
 #include <SDL_main.h>
 
 #include "memory_bus.h"
+#include "cartridge.h"
 #include "cpu.h"
 
 int main(int argc, char* argv[]) {
@@ -19,6 +20,8 @@ int main(int argc, char* argv[]) {
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "SDL2: Failed to open a window");
 		return -1;
 	}
+
+	cartridge_init("test.nes");
 
 	cpu cpu_state;
 	cpu_init(&cpu_state);
