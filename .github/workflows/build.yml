@@ -39,10 +39,9 @@ jobs:
         run: |
           mkdir -p build-${{ matrix.config }}
           cd build-${{ matrix.config }}
-          cmake .. \
-            -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
+          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DBUILD_SHARED_LIBS=ON \
             -DSDL3_DIR=$GITHUB_WORKSPACE/SDL3-installed/lib/cmake/SDL3 \
-            -DCJSON_DIR=$GITHUB_WORKSPACE/cJSON-installed/lib/cmake/cJSON
+            -Dcjson_DIR=$GITHUB_WORKSPACE/cJSON-installed/lib/cmake/cJSON
 
       - name: Build
         run: |
@@ -90,9 +89,9 @@ jobs:
         run: |
             mkdir -p build-${{ matrix.config }}
             cd build-${{ matrix.config }}
-            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" \
+            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" -DBUILD_SHARED_LIBS=ON \
               -DSDL3_DIR=C:/SDL3/SDL3-3.2.10/cmake
-              -DCJSON_DIR=C:/cJSON/lib/cmake/cJSON
+              -Dcjson_DIR=C:/cJSON/lib/cmake/cJSON
 
       - name: Build
         run: |
