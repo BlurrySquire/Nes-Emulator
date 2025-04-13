@@ -15,7 +15,11 @@ int video_scale = 1;
 void config_load();
 void config_reset();
 
+void run_cpu_tests();
+
 int main(int argc, char* argv[]) {
+	run_cpu_tests();
+
 	SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
@@ -127,4 +131,126 @@ void config_reset() {
 	}
 
 	cJSON_Delete(root);
+}
+
+void run_cpu_tests() {
+	FILE* file = fopen("tests/00.json", "r");
+	fseek(file, 0, SEEK_END);
+	u64 length = ftell(file);
+	rewind(file);
+
+	char* string = malloc(length + 1);
+	fread(string, 1, length, file);
+	string[length] = '\0';
+
+	cJSON* root = cJSON_Parse(string);
+	if (cJSON_IsArray(root)) {
+		printf("Starting tests.\n\n");
+
+		u64 size = cJSON_GetArraySize(root);
+		for (u64 i = 0; i < size; i++) {
+			bool passed = true;
+			cJSON* test = cJSON_GetArrayItem(root, i);
+
+			cpu cpu_state;
+			cpubus_init();
+			cpu_init(&cpu_state);
+
+			cJSON* name_obj = cJSON_GetObjectItemCaseSensitive(test, "name");
+			char* name = cJSON_GetStringValue(name_obj);
+			printf("Starting test '%s'\n", name);
+
+			cJSON* initial = cJSON_GetObjectItemCaseSensitive(test, "initial");
+
+			cpu_state.program_counter = cJSON_GetObjectItemCaseSensitive(initial, "pc")->valueint;
+			cpu_state.stack_pointer = cJSON_GetObjectItemCaseSensitive(initial, "s")->valueint;
+			cpu_state.accumulator = cJSON_GetObjectItemCaseSensitive(initial, "a")->valueint;
+			cpu_state.register_x = cJSON_GetObjectItemCaseSensitive(initial, "x")->valueint;
+			cpu_state.register_y = cJSON_GetObjectItemCaseSensitive(initial, "y")->valueint;
+			cpu_state.status.as_byte = cJSON_GetObjectItemCaseSensitive(initial, "p")->valueint;
+
+			cJSON* ram = cJSON_GetObjectItemCaseSensitive(initial, "ram");
+			if (cJSON_IsArray(ram)) {
+				u64 size = cJSON_GetArraySize(ram);
+				for (u64 i = 0; i < size; i++) {
+					cJSON* array = cJSON_GetArrayItem(ram, i);
+					cpubus_write(cJSON_GetArrayItem(array, 0)->valueint, cJSON_GetArrayItem(array, 1)->valueint);
+				}
+			}
+			else {
+				printf("Error reading 1.\n");
+				exit(-1);
+			}
+
+			cpu_execute_instruction(&cpu_state);
+
+			cJSON* result = cJSON_GetObjectItemCaseSensitive(test, "final");
+			u16 program_counter = cJSON_GetObjectItemCaseSensitive(result, "pc");
+			u8 stack_pointer = cJSON_GetObjectItemCaseSensitive(result, "s");
+			u8 accumulator = cJSON_GetObjectItemCaseSensitive(result, "a");
+			u8 register_x = cJSON_GetObjectItemCaseSensitive(result, "x");
+			u8 register_y = cJSON_GetObjectItemCaseSensitive(result, "y");
+			u8 status = cJSON_GetObjectItemCaseSensitive(result, "p");
+
+			cJSON* result_ram = cJSON_GetObjectItemCaseSensitive(result, "ram");
+			if (cJSON_IsArray(ram)) {
+				u64 size = cJSON_GetArraySize(result_ram);
+				for (u64 i = 0; i < size; i++) {
+					cJSON* array = cJSON_GetArrayItem(result_ram, i);
+					u16 address = cJSON_GetArrayItem(array, 0)->valueint;
+					u8 should_be = cJSON_GetArrayItem(array, 1)->valueint;
+					u8 is = cpubus_read(address);
+					if (is != should_be) {
+						printf("Ram 0x%04X should be 0x%02X but is 0x%02X\n", address, should_be, is);
+						passed = false;
+					}
+				}
+			}
+			else {
+				printf("Error reading 2.\n");
+				exit(-1);
+			}
+
+			if (program_counter != cpu_state.program_counter) {
+				printf("PC should be 0x%04X but is 0x%04X\n", program_counter, cpu_state.program_counter);
+				passed = false;
+			}
+
+			if (accumulator != cpu_state.accumulator) {
+				printf("A should be 0x%02X but is 0x%02X\n", accumulator, cpu_state.accumulator);
+				passed = false;
+			}
+
+			if (register_x != cpu_state.register_x) {
+				printf("X should be 0x%02X but is 0x%02X\n", register_x, cpu_state.register_x);
+				passed = false;
+			}
+
+			if (register_y != cpu_state.register_y) {
+				printf("Y should be 0x%02X but is 0x%02X\n", register_y, cpu_state.register_y);
+				passed = false;
+			}
+
+			if (status != cpu_state.status.as_byte) {
+				printf("Status should be 0x%02X but is 0x%02X\n", status, cpu_state.status.as_byte);
+				passed = false;
+			}
+
+			if (passed) {
+				printf("Test Passed.\n\n");
+			}
+			else {
+				printf("Test Failed.\n");
+				exit(-1);
+			}
+
+			cJSON_Delete(test);
+		}
+	}
+	else {
+		printf("Wrong file.\n");
+		exit(-1);
+	}
+
+	exit(0);
 }

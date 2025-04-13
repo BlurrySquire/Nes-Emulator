@@ -1,7 +1,7 @@
 #include "memory_bus.h"
 #include "cartridge.h"
 
-static u8 cpu_memory[0x07FF];
+static u8 cpu_memory[0xFFFF];
 static u8 ppu_memory[0x07FF];
 
 void cpubus_init() {
@@ -10,6 +10,15 @@ void cpubus_init() {
 	}
 }
 
+u8 cpubus_read(u16 address) {
+	return cpu_memory[address];
+}
+
+void cpubus_write(u16 address, u8 value) {
+	cpu_memory[address] = value;
+}
+
+/*
 u8 cpubus_read(u16 address) {
 	// 0x0000-0x1FFF CPU RAM
 	if ((address & 0x07FF) < 0x07FF && address < 0x1FFF) {
@@ -55,6 +64,7 @@ void cpubus_write(u16 address, u8 value) {
 		cartridge_write(address - 0x4020, value);
 	}
 }
+*/
 
 void ppubus_init() {
 	for (u16 i = 0; i < 0x07FF; i++) {
