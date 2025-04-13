@@ -32,8 +32,9 @@ jobs:
           git clone https://github.com/DaveGamble/cJSON.git
           cd cJSON
           mkdir build && cd build
-          cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/cJSON-installed -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
-          make -j$(nproc) && make install
+          cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/cJSON-installed -DCMAKE_BUILD_TYPE=Release -DENABLE_CJSON_TEST=Off
+          cmake --build .
+          cmake --install .
 
       - name: Configure CMake (${{ matrix.config }})
         run: |
@@ -82,7 +83,7 @@ jobs:
           git clone https://github.com/DaveGamble/cJSON.git
           cd cJSON
           mkdir build; cd build
-          cmake .. -DCMAKE_INSTALL_PREFIX="C:\cJSON" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+          cmake .. -DCMAKE_INSTALL_PREFIX="C:\cJSON" -DCMAKE_BUILD_TYPE=Release -DENABLE_CJSON_TEST=Off
           cmake --build .; cmake --install .
 
       - name: Configure CMake (${{ matrix.config }})
