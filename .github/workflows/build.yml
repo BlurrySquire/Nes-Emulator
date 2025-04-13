@@ -42,7 +42,7 @@ jobs:
           cd build-${{ matrix.config }}
           cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
             -DSDL3_DIR=$GITHUB_WORKSPACE/SDL3-installed/lib/cmake/SDL3 \
-            -Dcjson_DIR=$GITHUB_WORKSPACE/cJSON-installed/lib/cmake/cJSON
+            -DcJSON_DIR=$GITHUB_WORKSPACE/cJSON-installed/lib/cmake/cJSON
 
       - name: Build
         run: |
