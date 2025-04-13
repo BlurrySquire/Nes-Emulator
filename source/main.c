@@ -1,17 +1,29 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+#include <cjson/cJSON.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "memory_bus.h"
 #include "cartridge.h"
 #include "cpu.h"
+
+int video_scale = 1;
+
+void config_load();
+void config_reset();
 
 int main(int argc, char* argv[]) {
 	SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
+	config_load();
+
 	SDL_Window* window = SDL_CreateWindow(
 		"Nes-Emulator",
-		256, 240,
+		256 * video_scale, 240 * video_scale,
 		SDL_WINDOW_HIDDEN
 	);
 	SDL_ShowWindow(window);
@@ -71,4 +83,48 @@ int main(int argc, char* argv[]) {
 
 	SDL_Quit();
 	return 0;
+}
+
+void config_load() {
+	FILE* file = fopen("config.json", "r");
+	if (file == NULL) {
+		config_reset();
+	}
+	else {
+		fseek(file, 0, SEEK_END);
+		u64 length = ftell(file);
+		rewind(file);
+
+		char* contents = malloc(length + 1);
+		fread(contents, 1, length, file);
+		contents[length] = '\0';
+
+		cJSON* root = cJSON_Parse(contents);
+		cJSON* video_scale_obj = cJSON_GetObjectItemCaseSensitive(root, "video_scale");
+		if (cJSON_IsNumber(video_scale_obj)) {
+			video_scale = video_scale_obj->valueint;
+		}
+		else {
+			config_reset();
+		}
+
+		fclose(file);
+	}
+}
+
+void config_reset() {
+	cJSON* root = cJSON_CreateObject();
+	if (!root) return;
+
+	cJSON_AddNumberToObject(root, "video_scale", 1);
+
+	char* json_string = cJSON_Print(root);
+
+	FILE* file = fopen("config.json", "w");
+	if (file) {
+		fputs(json_string, file);
+		fclose(file);
+	}
+
+	cJSON_Delete(root);
 }

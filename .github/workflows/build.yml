@@ -25,11 +25,15 @@ jobs:
           curl -LO https://github.com/libsdl-org/SDL/releases/download/release-3.2.10/SDL3-3.2.10.zip
           unzip SDL3-3.2.10.zip
           cd SDL3-3.2.10
-          mkdir build
-          cd build
+          mkdir build && cd build
           cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/SDL3-installed
           make -j$(nproc)
           make install
+          git clone https://github.com/DaveGamble/cJSON.git
+          cd cJSON
+          mkdir build && cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/cJSON-installed
+          make -j$(nproc) && make install
 
       - name: Configure CMake (${{ matrix.config }})
         run: |
@@ -38,7 +42,7 @@ jobs:
           cmake .. \
             -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
             -DSDL3_DIR=$GITHUB_WORKSPACE/SDL3-installed/lib/cmake/SDL3 \
-            -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/SDL3-installed
+            -Dcjson_DIR=$GITHUB_WORKSPACE/cJSON-installed/lib/cmake/cJSON
 
       - name: Build
         run: |
@@ -51,7 +55,8 @@ jobs:
           mkdir package
           cp NesEmu package/
           cp ../README.md package/
-          cp $GITHUB_WORKSPACE/SDL3-installed/lib/libSDL3.so* package/ || true
+          cp $GITHUB_WORKSPACE/SDL3-installed/lib/libSDL3.so* package/
+          cp $GITHUB_WORKSPACE/cJSON-installed/lib/libcjson.so* package/
           cd package
           zip -r ../../linux-${{ matrix.config }}.zip .
 
@@ -75,12 +80,19 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-3.2.10/SDL3-devel-3.2.10-VC.zip" -OutFile "SDL3.zip"
           Expand-Archive -Path SDL3.zip -DestinationPath C:\SDL3
           Remove-Item -Force SDL3.zip
+          git clone https://github.com/DaveGamble/cJSON.git
+          cd cJSON
+          mkdir build; cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX="C:\cJSON" -DCMAKE_BUILD_TYPE=Release
+          cmake --build; cmake --install
 
       - name: Configure CMake (${{ matrix.config }})
         run: |
             mkdir -p build-${{ matrix.config }}
             cd build-${{ matrix.config }}
-            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" -DSDL3_DIR=C:/SDL3/SDL3-3.2.10/cmake
+            cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" \
+              -DSDL3_DIR=C:/SDL3/SDL3-3.2.10/cmake
+              -Dcjson_DIR=C:\cJSON\lib\cmake\cJSON
 
       - name: Build
         run: |
