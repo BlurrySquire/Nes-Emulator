@@ -39,7 +39,6 @@ int main(int argc, char* argv[]) {
 	cpu cpu_state;
 	cpu_init(&cpu_state);
 	
-	int runs = 0;
 	bool running = true;
 	while (running == true) {
 		SDL_Event event;
@@ -68,11 +67,6 @@ int main(int argc, char* argv[]) {
 		#endif
 
 		cpu_execute_instruction(&cpu_state);
-
-		if (runs == 5) {
-			exit(-1);
-		}
-		runs++;
 	}
 
 	SDL_Quit();
