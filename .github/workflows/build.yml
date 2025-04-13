@@ -92,7 +92,7 @@ jobs:
             cd build-${{ matrix.config }}
             cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config }} -G "Visual Studio 17 2022" \
               -DSDL3_DIR=C:/SDL3/SDL3-3.2.10/cmake
-              -Dcjson_DIR=C:/cJSON/lib/cmake/cJSON
+              -DcJSON_DIR=C:/cJSON/lib/cmake/cJSON
 
       - name: Build
         run: |

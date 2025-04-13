@@ -15,5 +15,5 @@ add_executable(NesEmu
 find_package(SDL3 REQUIRED)
 target_link_libraries(NesEmu PRIVATE SDL3::SDL3)
 
-find_package(cjson REQUIRED)
+find_package(cJSON REQUIRED)
 target_link_libraries(NesEmu PRIVATE cjson)
