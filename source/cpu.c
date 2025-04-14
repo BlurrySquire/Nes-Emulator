@@ -987,7 +987,7 @@ void opcode_brk(cpu* state) {
 
 	u8 low = cpubus_read(0xFFFE);
 	u8 high = cpubus_read(0xFFFF);
-	state->program_counter = (low << 8) | high;
+	state->program_counter = (high << 8) | low;
 
 	state->current_instruction_cycles += 6;
 }
