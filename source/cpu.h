@@ -4,14 +4,14 @@
 
 union status {
 	struct {
-		u8 negative_flag : 1;
-		u8 overflow_flag : 1;
-		u8 unused : 1;
-		u8 break_flag : 1;
-		u8 decimal_flag : 1;
-		u8 interrupt_disable : 1;
-		u8 zero_flag : 1;
 		u8 carry_flag : 1;
+		u8 zero_flag : 1;
+		u8 interrupt_disable : 1;
+		u8 decimal_flag : 1;
+		u8 break_flag : 1;
+		u8 unused : 1;
+		u8 overflow_flag : 1;
+		u8 negative_flag : 1;
 	};
 	u8 as_byte;
 };
