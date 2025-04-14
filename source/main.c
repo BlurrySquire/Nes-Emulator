@@ -15,10 +15,12 @@ int video_scale = 1;
 void config_load();
 void config_reset();
 
-void run_cpu_tests();
+void run_cpu_test(char* filename);
 
 int main(int argc, char* argv[]) {
-	run_cpu_tests();
+	if (argc > 1) {
+		run_cpu_test(argv[1]);
+	}
 
 	SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
@@ -133,8 +135,8 @@ void config_reset() {
 	cJSON_Delete(root);
 }
 
-void run_cpu_tests() {
-	FILE* file = fopen("tests/00.json", "r");
+void run_cpu_test(char* filename) {
+	FILE* file = fopen(filename, "r");
 	fseek(file, 0, SEEK_END);
 	u64 length = ftell(file);
 	rewind(file);
@@ -185,12 +187,12 @@ void run_cpu_tests() {
 			cpu_execute_instruction(&cpu_state);
 
 			cJSON* result = cJSON_GetObjectItemCaseSensitive(test, "final");
-			u16 program_counter = cJSON_GetObjectItemCaseSensitive(result, "pc");
-			u8 stack_pointer = cJSON_GetObjectItemCaseSensitive(result, "s");
-			u8 accumulator = cJSON_GetObjectItemCaseSensitive(result, "a");
-			u8 register_x = cJSON_GetObjectItemCaseSensitive(result, "x");
-			u8 register_y = cJSON_GetObjectItemCaseSensitive(result, "y");
-			u8 status = cJSON_GetObjectItemCaseSensitive(result, "p");
+			u16 program_counter = cJSON_GetObjectItemCaseSensitive(result, "pc")->valueint;
+			u8 stack_pointer = cJSON_GetObjectItemCaseSensitive(result, "s")->valueint;
+			u8 accumulator = cJSON_GetObjectItemCaseSensitive(result, "a")->valueint;
+			u8 register_x = cJSON_GetObjectItemCaseSensitive(result, "x")->valueint;
+			u8 register_y = cJSON_GetObjectItemCaseSensitive(result, "y")->valueint;
+			u8 status = cJSON_GetObjectItemCaseSensitive(result, "p")->valueint;
 
 			cJSON* result_ram = cJSON_GetObjectItemCaseSensitive(result, "ram");
 			if (cJSON_IsArray(ram)) {
@@ -244,7 +246,7 @@ void run_cpu_tests() {
 				exit(-1);
 			}
 
-			cJSON_Delete(test);
+			cJSON_free(test);
 		}
 	}
 	else {
