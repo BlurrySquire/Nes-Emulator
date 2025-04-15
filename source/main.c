@@ -15,12 +15,15 @@ int video_scale = 1;
 void config_load();
 void config_reset();
 
-void run_cpu_test(char* filename);
+int run_cpu_test(char* filename);
 
 int main(int argc, char* argv[]) {
 	if (argc > 2) {
 		if (strcmp(argv[1], "--single-step-test") == 0) {
-			run_cpu_test(argv[2]);
+			u8* memory = malloc(0xFFFF);
+			cpubus_enable_testmode(memory);
+			int return_code = run_cpu_test(argv[2]);
+			return return_code;
 		}
 	}
 
@@ -136,7 +139,7 @@ void config_reset() {
 	cJSON_Delete(root);
 }
 
-void run_cpu_test(char* filename) {
+int run_cpu_test(char* filename) {
 	printf("Running test: %s", filename);
 	FILE* file = fopen(filename, "r");
 	fseek(file, 0, SEEK_END);
@@ -183,7 +186,7 @@ void run_cpu_test(char* filename) {
 			}
 			else {
 				printf("Error reading 1.\n");
-				exit(-1);
+				return -1;
 			}
 
 			cpu_execute_instruction(&cpu_state);
@@ -212,7 +215,7 @@ void run_cpu_test(char* filename) {
 			}
 			else {
 				printf("Error reading 2.\n");
-				exit(-1);
+				return -1;
 			}
 
 			if (program_counter != cpu_state.program_counter) {
@@ -245,7 +248,7 @@ void run_cpu_test(char* filename) {
 			}
 			else {
 				printf("Test Failed.\n");
-				exit(-1);
+				return -1;
 			}
 
 			cJSON_free(test);
@@ -253,8 +256,8 @@ void run_cpu_test(char* filename) {
 	}
 	else {
 		printf("Wrong file.\n");
-		exit(-1);
+		return -1;
 	}
 
-	exit(0);
+	return 0;
 }
