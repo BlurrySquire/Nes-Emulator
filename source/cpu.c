@@ -784,7 +784,7 @@ void opcode_bit(cpu* state, u16 address) {
 
 	state->status.zero_flag = !(state->accumulator & value);
 	state->status.negative_flag = (value & (1 << 7)) != 0;
-	state->status.overflow_flag = value & (1 << 6);
+	state->status.overflow_flag = (value & (1 << 6)) == (1 << 6);
 
 	state->current_instruction_cycles += 1;
 }
