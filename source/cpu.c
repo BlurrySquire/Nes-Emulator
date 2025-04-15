@@ -462,7 +462,7 @@ u16 addressing_indirectindexed(cpu* state) {
 	u8 pointer = cpubus_read(state->program_counter);
 	state->program_counter++;
 
-	u16 base = (u16)cpubus_read(pointer) | (u16)(cpubus_read(pointer + 1) << 8);
+	u16 base = (u16)cpubus_read(pointer) | (u16)(cpubus_read((pointer + 1) & 0xFF) << 8);
 	u16 address = base + state->register_y;
 
 	state->current_instruction_cycles += 4;
