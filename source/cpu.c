@@ -657,7 +657,7 @@ void opcode_asl(cpu* state, u16 address) {
 	cpubus_write(address, value);
 	cpubus_write(address, result);
 
-	state->status.carry_flag = value & (1 << 7);
+	state->status.carry_flag = (value & (1 << 7)) == (1 << 7);
 	state->status.zero_flag = !result;
 	state->status.negative_flag = (result & (1 << 7)) != 0;
 
@@ -665,7 +665,7 @@ void opcode_asl(cpu* state, u16 address) {
 }
 
 void opcode_asl_accumulator(cpu* state) {
-	state->status.carry_flag = state->accumulator & (1 << 7);
+	state->status.carry_flag = (state->accumulator & (1 << 7)) == (1 << 7);
 	state->accumulator = state->accumulator << 1;
 	state->status.zero_flag = !state->accumulator;
 	state->status.negative_flag = (state->accumulator & (1 << 7)) != 0;
@@ -707,7 +707,7 @@ void opcode_rol(cpu* state, u16 address) {
 	cpubus_write(address, value);
 	cpubus_write(address, result);
 
-	state->status.carry_flag = value & (1 << 7);
+	state->status.carry_flag = (value & (1 << 7)) == (1 << 7);
 	state->status.zero_flag = !result;
 	state->status.negative_flag = (result & (1 << 7)) != 0;
 
@@ -720,7 +720,7 @@ void opcode_rol_accumulator(cpu* state) {
 
 	state->accumulator = result;
 
-	state->status.carry_flag = value & (1 << 7);
+	state->status.carry_flag = (value & (1 << 7)) == (1 << 7);
 	state->status.zero_flag = !result;
 	state->status.negative_flag = (result & (1 << 7)) != 0;
 }
