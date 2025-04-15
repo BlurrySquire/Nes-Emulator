@@ -17,13 +17,13 @@
 1e: passed ✅
 20: passed ✅
 21: passed ✅
-24: failed ❌
+24: passed ✅
 25: passed ✅
 26: passed ✅
-28: failed ❌
+28: passed ✅
 29: passed ✅
 2a: passed ✅
-2c: failed ❌
+2c: passed ✅
 2d: passed ✅
 2e: passed ✅
 30: passed ✅
