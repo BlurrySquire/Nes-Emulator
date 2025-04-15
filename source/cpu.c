@@ -1024,19 +1024,20 @@ void opcode_pla(cpu* state) {
 }
 
 void opcode_php(cpu* state) {
-	state->status.break_flag = 1;
 	cpubus_write(state->stack_pointer + 0x0100, state->status.as_byte);
-	state->status.break_flag = 0;
 	state->stack_pointer--;
 
 	state->current_instruction_cycles += 1;
 }
 
 void opcode_plp(cpu* state) {
-	state->status.as_byte = cpubus_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
+	state->status.as_byte = cpubus_read(state->stack_pointer + 0x0100);
 
-	state->current_instruction_cycles += 1;
+	state->status.break_flag = 0;
+	state->status.unused = 1;
+
+	state->current_instruction_cycles += 4;
 }
 
 void opcode_tsx(cpu* state) {
