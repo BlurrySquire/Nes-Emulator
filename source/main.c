@@ -30,9 +30,8 @@ int main(int argc, char* argv[]) {
 	SDL_Window* window = SDL_CreateWindow(
 		"Nes-Emulator",
 		256 * video_scale, 240 * video_scale,
-		SDL_WINDOW_HIDDEN
+		0
 	);
-	SDL_ShowWindow(window);
 
 	if (window == NULL) {
 		SDL_Quit();
