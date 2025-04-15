@@ -31,7 +31,7 @@ for filename in os.listdir("tests"):
             test_path = os.path.join("tests", filename)
             
             try:
-                result = subprocess.run(["build/Debug/NesEmu.exe", "tests"], capture_output=True, text=True)
+                result = subprocess.run(["build/Debug/NesEmu.exe", test_path], capture_output=True, text=True)
 
                 if result.returncode == 0:
                     print(f"{opcode}: passed ✅")
