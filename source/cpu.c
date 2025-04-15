@@ -1024,7 +1024,9 @@ void opcode_pla(cpu* state) {
 }
 
 void opcode_php(cpu* state) {
+	state->status.break_flag = 1;
 	cpubus_write(state->stack_pointer + 0x0100, state->status.as_byte);
+	state->status.break_flag = 0;
 	state->stack_pointer--;
 
 	state->current_instruction_cycles += 1;
