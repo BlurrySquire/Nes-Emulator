@@ -829,7 +829,7 @@ void opcode_cpy(cpu* state, u16 address) {
 
 void opcode_bcc(cpu* state, i8 address) {
 	if (!state->status.carry_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;
@@ -843,7 +843,7 @@ void opcode_bcc(cpu* state, i8 address) {
 
 void opcode_bcs(cpu* state, i8 address) {
 	if (state->status.carry_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;
@@ -857,7 +857,7 @@ void opcode_bcs(cpu* state, i8 address) {
 
 void opcode_beq(cpu* state, i8 address) {
 	if (state->status.zero_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;
@@ -871,7 +871,7 @@ void opcode_beq(cpu* state, i8 address) {
 
 void opcode_bne(cpu* state, i8 address) {
 	if (!state->status.zero_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;
@@ -885,13 +885,13 @@ void opcode_bne(cpu* state, i8 address) {
 
 void opcode_bpl(cpu* state, i8 address) {
 	if (!state->status.negative_flag) {
-		u16 base = state->program_counter + 2;
-		u16 target = base + address;
+		u16 base = state->program_counter;
+		u16 target = base + (i16)address;
 		
 		state->program_counter = target;
 
 		state->current_instruction_cycles += 1;
-		if ((base & 0x00FF) != (base & 0x00FF)) {
+		if ((base & 0x00FF) != (target & 0x00FF)) {
 			state->current_instruction_cycles += 1;
 		}
 	}
@@ -899,7 +899,7 @@ void opcode_bpl(cpu* state, i8 address) {
 
 void opcode_bmi(cpu* state, i8 address) {
 	if (state->status.negative_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;
@@ -913,7 +913,7 @@ void opcode_bmi(cpu* state, i8 address) {
 
 void opcode_bvc(cpu* state, i8 address) {
 	if (!state->status.overflow_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;
@@ -927,7 +927,7 @@ void opcode_bvc(cpu* state, i8 address) {
 
 void opcode_bvs(cpu* state, i8 address) {
 	if (state->status.overflow_flag) {
-		u16 base = state->program_counter + 2;
+		u16 base = state->program_counter;
 		u16 target = base + address;
 		
 		state->program_counter = target;

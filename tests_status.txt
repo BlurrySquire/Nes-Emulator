@@ -7,7 +7,7 @@
 0a: passed ✅
 0d: passed ✅
 0e: passed ✅
-10: failed ❌
+10: passed ✅
 11: failed ❌
 15: passed ✅
 16: passed ✅
@@ -26,7 +26,7 @@
 2c: failed ❌
 2d: passed ✅
 2e: passed ✅
-30: failed ❌
+30: passed ✅
 31: failed ❌
 35: passed ✅
 36: passed ✅
@@ -44,7 +44,7 @@
 4c: passed ✅
 4d: passed ✅
 4e: passed ✅
-50: failed ❌
+50: passed ✅
 51: failed ❌
 55: passed ✅
 56: passed ✅
@@ -62,7 +62,7 @@
 6c: passed ✅
 6d: failed ❌
 6e: failed ❌
-70: failed ❌
+70: passed ✅
 71: failed ❌
 75: failed ❌
 76: failed ❌
@@ -79,7 +79,7 @@
 8c: passed ✅
 8d: passed ✅
 8e: passed ✅
-90: failed ❌
+90: passed ✅
 91: failed ❌
 94: passed ✅
 95: passed ✅
@@ -100,7 +100,7 @@ aa: passed ✅
 ac: failed ❌
 ad: passed ✅
 ae: passed ✅
-b0: failed ❌
+b0: passed ✅
 b1: failed ❌
 b4: failed ❌
 b5: passed ✅
@@ -122,7 +122,7 @@ ca: passed ✅
 cc: passed ✅
 cd: passed ✅
 ce: passed ✅
-d0: failed ❌
+d0: passed ✅
 d1: failed ❌
 d5: passed ✅
 d6: passed ✅
@@ -141,7 +141,7 @@ ea: passed ✅
 ec: passed ✅
 ed: failed ❌
 ee: passed ✅
-f0: failed ❌
+f0: passed ✅
 f1: failed ❌
 f5: failed ❌
 f6: passed ✅
