@@ -18,8 +18,10 @@ void config_reset();
 void run_cpu_test(char* filename);
 
 int main(int argc, char* argv[]) {
-	if (argc > 1) {
-		run_cpu_test(argv[1]);
+	if (argc > 2) {
+		if (strcmp(argv[1], "--single-step-test") == 0) {
+			run_cpu_test(argv[2]);
+		}
 	}
 
 	SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
@@ -135,6 +137,7 @@ void config_reset() {
 }
 
 void run_cpu_test(char* filename) {
+	printf("Running test: %s", filename);
 	FILE* file = fopen(filename, "r");
 	fseek(file, 0, SEEK_END);
 	u64 length = ftell(file);
