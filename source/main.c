@@ -140,7 +140,7 @@ void config_reset() {
 }
 
 int run_cpu_test(char* filename) {
-	printf("Running test: %s", filename);
+	printf("Running test: %s\n", filename);
 	FILE* file = fopen(filename, "r");
 	fseek(file, 0, SEEK_END);
 	u64 length = ftell(file);
