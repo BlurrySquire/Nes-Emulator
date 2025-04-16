@@ -724,9 +724,9 @@ void opcode_ror(cpu* state, u16 address) {
 	cpubus_write(address, value);
 	cpubus_write(address, result);
 
-	state->status.carry_flag = value & 1;
+	state->status.carry_flag = value & 1 == 1;
 	state->status.zero_flag = !result;
-	state->status.negative_flag = result & (1 << 7);
+	state->status.negative_flag = result & (1 << 7) != 0;
 }
 
 void opcode_ror_accumulator(cpu* state) {
@@ -1011,8 +1011,11 @@ void opcode_pha(cpu* state) {
 }
 
 void opcode_pla(cpu* state) {
-	state->accumulator = cpubus_read(state->stack_pointer + 0x0100);
 	state->stack_pointer++;
+	state->accumulator = cpubus_read(state->stack_pointer + 0x0100);
+
+	state->status.zero_flag = !state->accumulator;
+	state->status.negative_flag = (state->accumulator & (1 << 7)) == (1 << 7);
 
 	state->current_instruction_cycles += 1;
 }
