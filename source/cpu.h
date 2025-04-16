@@ -26,8 +26,8 @@ typedef struct cpu {
 	union status status;
 	u8 stack_pointer;
 
-	u8 interrupt_flag;
-	u8 instruction_delay;
+	u8 interrupt_flag_changed;
+	u8 previous_interrupt_flag;
 } cpu;
 
 void cpu_init(cpu* state);

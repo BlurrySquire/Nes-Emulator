@@ -117,13 +117,20 @@ void cpu_init(cpu* state) {
 	state->status.break_flag = 0;
 	state->status.unused = 1;
 
-	state->interrupt_flag = 0;
+	state->interrupt_flag_changed = 0;
+	state->previous_interrupt_flag = 1;
 }
 
 void cpu_execute_instruction(cpu* state) {
 	u8 instruction = cpubus_read(state->program_counter);
 	state->program_counter++;
 	state->current_instruction_cycles += 1;
+
+	if (state->interrupt_flag_changed) {
+		if (state->previous_interrupt_flag != state->status.interrupt_disable) {
+			// The 1 instruction delay for interrupt disable flag
+		}
+	}
 
 	switch (instruction) {
 		//
@@ -349,21 +356,6 @@ void cpu_execute_instruction(cpu* state) {
 		//
 
 		case 0xEA: opcode_nop(state); break;
-	}
-
-	// CLI & SEI have a 1 instruction delay.
-	if (state->instruction_delay == 0xFF) {
-		if (state->interrupt_flag == 0) {
-			state->status.interrupt_disable = 0;
-		}
-		else if (state->interrupt_flag == 1) {
-			state->status.interrupt_disable = 1;
-		}
-
-		state->instruction_delay = 0;
-	}
-	else if (state->instruction_delay == 1) {
-		state->instruction_delay = 0xFF;
 	}
 
 	state->total_cycles += state->current_instruction_cycles;
@@ -1075,14 +1067,18 @@ void opcode_sec(cpu* state) {
 }
 
 void opcode_cli(cpu* state) {
-	state->interrupt_flag = 0;
-	state->instruction_delay = 1;
+	state->previous_interrupt_flag = state->status.interrupt_disable;
+	state->status.interrupt_disable = 0;
+	state->interrupt_flag_changed = 1;
+
 	state->current_instruction_cycles += 1;
 }
 
 void opcode_sei(cpu* state) {
-	state->interrupt_flag = 1;
-	state->instruction_delay = 1;
+	state->previous_interrupt_flag = state->status.interrupt_disable;
+	state->status.interrupt_disable = 1;
+	state->interrupt_flag_changed = 1;
+
 	state->current_instruction_cycles += 1;
 }
 
