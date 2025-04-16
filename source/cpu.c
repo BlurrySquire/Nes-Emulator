@@ -995,6 +995,8 @@ void opcode_brk(cpu* state) {
 void opcode_rti(cpu* state) {
 	state->stack_pointer++;
 	state->status.as_byte = cpubus_read(state->stack_pointer + 0x0100);
+	state->status.unused = 1;
+	state->status.break_flag = 0;
 
 	state->stack_pointer++;
     u8 low = cpubus_read(state->stack_pointer + 0x0100);
