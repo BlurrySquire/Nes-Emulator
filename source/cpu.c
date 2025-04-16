@@ -508,7 +508,7 @@ void opcode_ldy(cpu* state, u16 address) {
 	state->current_instruction_cycles += 1;
 
 	state->status.zero_flag = !state->register_y;
-	state->status.negative_flag = (state->register_x & (1 << 7)) != 0;
+	state->status.negative_flag = (state->register_y & (1 << 7)) == (1 << 7);
 }
 
 void opcode_sty(cpu* state, u16 address) {
@@ -533,7 +533,7 @@ void opcode_tay(cpu* state) {
 	state->current_instruction_cycles += 1;
 
 	state->status.zero_flag = !state->register_y;
-	state->status.negative_flag = (state->register_x & (1 << 7)) != 0;
+	state->status.negative_flag = (state->register_y & (1 << 7)) == (1 << 7);
 }
 
 void opcode_txa(cpu* state) {
@@ -1051,9 +1051,6 @@ void opcode_tsx(cpu* state) {
 void opcode_txs(cpu* state) {
 	state->stack_pointer = state->register_x;
 	state->current_instruction_cycles += 1;
-
-	state->status.zero_flag = !state->stack_pointer;
-	state->status.negative_flag = ((state->stack_pointer) & (1 << 7)) != 0;
 }
 
 //

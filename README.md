@@ -2,7 +2,7 @@
 A NES emulator project used to learn emulator development. Currently it supports x86-64 Windows and Linux. The debug version includes additional printing which can help debug problems. My main source of documentation for this project is the [Nesdev Wiki](https://www.nesdev.org/wiki/Nesdev_Wiki).
 
 ## Implementation Status
-- All official CPU opcodes are implemented (119/151 tests passing).
+- All official CPU opcodes are implemented (151/151 tests passing).
 - Memory-mapped I/O is in the works.
 - Cartridge/rom parsing is also in the works.
 
