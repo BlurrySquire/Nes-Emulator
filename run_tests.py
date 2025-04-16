@@ -23,6 +23,13 @@ official_opcodes = [
     "f0", "f1", "f5", "f6", "f8", "f9", "fd", "fe"
 ]
 
+# Try local build, if not then normal user running the tests
+executable = "build/Debug/NesEmu.exe"
+if not os.dir.exists(executable):
+    executable = "build/Release/NesEmu.exe"
+if not os.dir.exists(executable):
+    executable = "NesEmu.exe"
+
 for filename in os.listdir("tests"):
     if filename.endswith(".json"):
         opcode = filename.split('.')[0]
