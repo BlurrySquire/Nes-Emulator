@@ -724,9 +724,10 @@ void opcode_ror(cpu* state, u16 address) {
 	cpubus_write(address, value);
 	cpubus_write(address, result);
 
-	state->status.carry_flag = value & 1 == 1;
+	state->status.carry_flag = (value & 1) != 0;
 	state->status.zero_flag = !result;
-	state->status.negative_flag = result & (1 << 7) != 0;
+	state->status.negative_flag = (result & (1 << 7)) != 0;
+
 }
 
 void opcode_ror_accumulator(cpu* state) {
