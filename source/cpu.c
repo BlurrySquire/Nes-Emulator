@@ -562,8 +562,8 @@ void opcode_adc(cpu* state, u16 address) {
 	state->current_instruction_cycles += 1;
 
 	state->status.carry_flag = result > 0x00FF;
-	state->status.zero_flag = !result;
-	state->status.overflow_flag = (result ^ state->accumulator) & (result ^ memory) & 0x80;
+	state->status.zero_flag = (u8)result == 0x00;
+	state->status.overflow_flag = (((~(state->accumulator ^ memory)) & (state->accumulator ^ (u8)result)) & 0x80) == 0x80;
 	state->status.negative_flag = (result & (1 << 7)) != 0;
 
 	state->accumulator = result & 0xFF;
@@ -574,9 +574,9 @@ void opcode_sbc(cpu* state, u16 address) {
 	u16 result = state->accumulator - memory - (1 - state->status.carry_flag);
 	state->current_instruction_cycles += 1;
 
-	state->status.carry_flag = result > 0x00FF;
-	state->status.zero_flag = !result;
-	state->status.overflow_flag = (result ^ state->accumulator) & (result ^ memory) & 0x80;
+	state->status.carry_flag = result < 0x0100;
+	state->status.zero_flag = (u8)result == 0x00;
+	state->status.overflow_flag = ((state->accumulator ^ memory) & (state->accumulator ^ (u8)(result & 0xFF)) & 0x80) != 0;
 	state->status.negative_flag = (result & (1 << 7)) != 0;
 
 	state->accumulator = result & 0xFF;
