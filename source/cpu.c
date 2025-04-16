@@ -235,7 +235,7 @@ void cpu_execute_instruction(cpu* state) {
 		case 0x46: opcode_lsr(state, addressing_zeropage(state)); break;
 		case 0x56: opcode_lsr(state, addressing_zeropagex(state)); break;
 		case 0x4E: opcode_lsr(state, addressing_absolute(state)); break;
-		case 0x5E: opcode_lsr(state, addressing_absolutex(state));
+		case 0x5E: opcode_lsr(state, addressing_absolutex(state)); break;
 
 		case 0x2A: opcode_rol_accumulator(state); break;
 		case 0x26: opcode_rol(state, addressing_zeropage(state)); break;
@@ -672,7 +672,7 @@ void opcode_lsr(cpu* state, u16 address) {
 	cpubus_write(address, value);
 	cpubus_write(address, result);
 
-	state->status.carry_flag = value & 1;
+	state->status.carry_flag = (value & 1) == 1;
 	state->status.zero_flag = !result;
 	state->status.negative_flag = (result & (1 << 7)) != 0;
 
