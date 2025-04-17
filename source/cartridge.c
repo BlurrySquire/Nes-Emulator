@@ -2,10 +2,12 @@
 
 static u8 cartridge_data[0xBFE0];
 
-void cartridge_init(char* rom_path) {
+int cartridge_init(char* rom_path) {
 	for (u16 i = 0; i < 0xBFE0; i++) {
 		cartridge_data[i] = 0x00;
 	}
+
+	return 0;
 }
 
 u8 cartridge_read(u16 address) {

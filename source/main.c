@@ -25,74 +25,75 @@ int main(int argc, char* argv[]) {
 			int return_code = run_cpu_test(argv[2]);
 			return return_code;
 		}
+		else {
+			config_load();
+
+			cpu cpu_state;
+
+			if (!cartridge_init(argv[1])) {
+				printf("Error loading rom '%s'.\n", argv[1]);
+				return -1;
+			}
+
+			cpubus_init();
+			cpu_init(&cpu_state);
+
+			SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
+			SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+		
+			SDL_Window* window = SDL_CreateWindow(
+				"Nes-Emulator",
+				256 * video_scale, 240 * video_scale,
+				0
+			);
+		
+			if (window == NULL) {
+				SDL_Quit();
+				SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "SDL2: Failed to open a window");
+				return -1;
+			}
+
+			bool running = true;
+			while (running == true) {
+				SDL_Event event;
+				while (SDL_PollEvent(&event)) {
+					if (event.type == SDL_EVENT_QUIT) {
+						running = false;
+					}
+				}
+		
+				#ifndef NDEBUG
+					printf( "CPU State:\n");
+					printf(
+						"PC: 0x%04X, SP: 0x%02X\n",
+						cpu_state.program_counter, cpu_state.stack_pointer
+					);
+					printf(
+						"A: 0x%02X, X: 0x%02X, Y: 0x%02X\n",
+						cpu_state.accumulator, cpu_state.register_x, cpu_state.register_y
+					);
+					printf(
+						"N: %i, V: %i, B: %i, D: %i, I: %i, Z: %i, C: %i\n\n",
+						cpu_state.status.negative_flag, cpu_state.status.overflow_flag, cpu_state.status.break_flag,
+						cpu_state.status.decimal_flag, cpu_state.status.interrupt_disable, cpu_state.status.zero_flag,
+						cpu_state.status.carry_flag
+					);
+				#endif
+		
+				cpu_execute_instruction(&cpu_state);
+			}
+		
+			SDL_Quit();
+			return 0;
+		}
 	}
+	else {
+		printf("Not enough arguments. Use one of the following:\n");
+		printf("./NesEmu <path/to/rom.nes>\n");
+		printf("./NesEmu --single-step-test <path/to/test.json>\n");
 
-	SDL_SetAppMetadata("Nes-Emulator", "v0.1", "com.rustygrape238.nesemulator");
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-
-	config_load();
-
-	SDL_Window* window = SDL_CreateWindow(
-		"Nes-Emulator",
-		256 * video_scale, 240 * video_scale,
-		0
-	);
-
-	if (window == NULL) {
-		SDL_Quit();
-		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "SDL2: Failed to open a window");
 		return -1;
 	}
-
-	cpubus_init();
-	cartridge_init("test.nes");
-	
-	cpubus_write(0xFFFC, 0x00);
-	cpubus_write(0xFFFD, 0xF0);
-
-	cpubus_write(0xF000, 0xA2); // LDA Immediate 0xFF
-	cpubus_write(0xF001, 0xFF);
-	cpubus_write(0xF002, 0x9A); // TXS
-	cpubus_write(0xF003, 0xEA); // NOP
-	cpubus_write(0xF004, 0x4C); // JMP Absolute 0xF003
-	cpubus_write(0xF005, 0x03);
-	cpubus_write(0xF006, 0xF0);
-
-	cpu cpu_state;
-	cpu_init(&cpu_state);
-	
-	bool running = true;
-	while (running == true) {
-		SDL_Event event;
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_EVENT_QUIT) {
-				running = false;
-			}
-		}
-
-		#ifndef NDEBUG
-			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "CPU State:\n");
-			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
-				"PC: 0x%04X, SP: 0x%02X\n",
-				cpu_state.program_counter, cpu_state.stack_pointer
-			);
-			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
-				"A: 0x%02X, X: 0x%02X, Y: 0x%02X\n",
-				cpu_state.accumulator, cpu_state.register_x, cpu_state.register_y
-			);
-			SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
-				"N: %i, V: %i, B: %i, D: %i, I: %i, Z: %i, C: %i\n\n",
-				cpu_state.status.negative_flag, cpu_state.status.overflow_flag, cpu_state.status.break_flag,
-				cpu_state.status.decimal_flag, cpu_state.status.interrupt_disable, cpu_state.status.zero_flag,
-				cpu_state.status.carry_flag
-			);
-		#endif
-
-		cpu_execute_instruction(&cpu_state);
-	}
-
-	SDL_Quit();
-	return 0;
 }
 
 void config_load() {
