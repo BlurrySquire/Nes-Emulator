@@ -10,6 +10,7 @@ add_executable(NesEmu
 	source/memory_bus.c
 	source/cpu.c
 	source/cartridge.c
+	source/mapper.c
 )
 
 find_package(SDL3 REQUIRED)
