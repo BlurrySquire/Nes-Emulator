@@ -44,7 +44,7 @@ u8 cpubus_read(u16 address) {
 		}
 		// 0x4020-0xFFFF Cartridge use
 		else {
-			return cartridge_read(address - 0x4020);
+			return cartridge_read(address);
 		}
 	}
 	else {
@@ -72,7 +72,7 @@ void cpubus_write(u16 address, u8 value) {
 		}
 		// 0x4020-0xFFFF Cartridge use
 		else {
-			cartridge_write(address - 0x4020, value);
+			cartridge_write(address, value);
 		}
 	}
 	else {
