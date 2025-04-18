@@ -18,7 +18,7 @@ void config_reset();
 int run_cpu_test(char* filename);
 
 int main(int argc, char* argv[]) {
-	if (argc > 2) {
+	if (argc >= 2) {
 		if (strcmp(argv[1], "--single-step-test") == 0) {
 			u8* memory = malloc(0xFFFF);
 			cpubus_enable_testmode(memory);
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 
 			cpu cpu_state;
 
-			if (!cartridge_init(argv[1])) {
+			if (cartridge_init(argv[1]) != 0) {
 				printf("Error loading rom '%s'.\n", argv[1]);
 				return -1;
 			}
@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
 						cpu_state.status.carry_flag
 					);
 				#endif
+				system("pause");
 		
 				cpu_execute_instruction(&cpu_state);
 			}
